@@ -13,6 +13,10 @@ public class Ubicacion {
     String direccion;
 
 
+    public Ubicacion() {
+
+    }
+
     public Integer getId() {
         return id;
     }

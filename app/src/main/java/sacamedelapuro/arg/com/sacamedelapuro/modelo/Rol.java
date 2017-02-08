@@ -10,6 +10,9 @@ public class Rol {
     String nombre;
 
 
+    public Rol() {
+    }
+
     public Rol(Integer id, String nombre) {
         this.id = id;
         this.nombre = nombre;

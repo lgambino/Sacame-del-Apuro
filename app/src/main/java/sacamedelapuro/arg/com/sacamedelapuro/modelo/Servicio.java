@@ -15,6 +15,10 @@ public class Servicio {
     TipoServicio tipo;
 
 
+    public Servicio() {
+
+    }
+
     public Servicio(Integer id, String nombre, String descripcion, Integer precio, TipoServicio tipo) {
         this.id = id;
         this.nombre = nombre;

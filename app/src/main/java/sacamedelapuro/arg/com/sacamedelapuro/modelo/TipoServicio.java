@@ -10,6 +10,10 @@ public class TipoServicio {
     String nombre;
 
 
+    public TipoServicio() {
+
+    }
+
     public TipoServicio(Integer id, String nombre) {
         this.id = id;
         this.nombre = nombre;

@@ -16,6 +16,10 @@ public class Usuario {
     Servicio servicio;
 
 
+    public Usuario() {
+
+    }
+
     public Usuario(Integer id, String username, String nombre, Rol rol, Ubicacion ubicacion, String dni, Contacto contacto) {
         this.id = id;
         this.username = username;

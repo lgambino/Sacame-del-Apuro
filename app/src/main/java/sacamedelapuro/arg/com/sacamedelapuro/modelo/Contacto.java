@@ -12,6 +12,10 @@ public class Contacto {
     String email;
 
 
+    public Contacto() {
+
+    }
+
     public Contacto(Integer id, String empresa, String num, String email) {
         this.id = id;
         this.empresa = empresa;
