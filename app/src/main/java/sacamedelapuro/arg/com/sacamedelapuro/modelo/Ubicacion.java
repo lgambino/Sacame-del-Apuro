@@ -7,10 +7,10 @@ package sacamedelapuro.arg.com.sacamedelapuro.modelo;
 public class Ubicacion {
 
 
-    Integer id;
-    String latitud;
-    String longitud;
-    String direccion;
+    private Integer id;
+    private String latitud;
+    private String longitud;
+    private String direccion;
 
 
     public Ubicacion() {

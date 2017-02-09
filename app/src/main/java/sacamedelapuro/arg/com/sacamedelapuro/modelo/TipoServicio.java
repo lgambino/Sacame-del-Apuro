@@ -6,8 +6,8 @@ package sacamedelapuro.arg.com.sacamedelapuro.modelo;
 
 public class TipoServicio {
 
-    Integer id;
-    String nombre;
+    private Integer id;
+    private String nombre;
 
 
     public TipoServicio() {

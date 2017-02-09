@@ -6,10 +6,10 @@ package sacamedelapuro.arg.com.sacamedelapuro.modelo;
 
 public class Contacto {
 
-    Integer id;
-    String empresa;
-    String num;
-    String email;
+    private Integer id;
+    private String empresa;
+    private String num;
+    private String email;
 
 
     public Contacto() {

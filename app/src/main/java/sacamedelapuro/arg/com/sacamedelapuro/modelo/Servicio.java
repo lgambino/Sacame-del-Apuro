@@ -7,12 +7,12 @@ package sacamedelapuro.arg.com.sacamedelapuro.modelo;
 public class Servicio {
 
 
-    Integer id;
-    String nombre;
-    String descripcion;
-    String observaciones;
-    Integer precio;
-    TipoServicio tipo;
+    private Integer id;
+    private String nombre;
+    private String descripcion;
+    private String observaciones;
+    private Integer precio;
+    private TipoServicio tipo;
 
 
     public Servicio() {

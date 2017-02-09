@@ -6,14 +6,14 @@ package sacamedelapuro.arg.com.sacamedelapuro.modelo;
 
 public class Usuario {
 
-    Integer id;
-    String username;
-    String nombre;
-    String dni;
-    Contacto contacto;
-    Rol rol;
-    Ubicacion ubicacion;
-    Servicio servicio;
+    private Integer id;
+    private String username;
+    private String nombre;
+    private String dni;
+    private Contacto contacto;
+    private Rol rol;
+    private Servicio servicio;
+    private Ubicacion ubicacion;
 
 
     public Usuario() {
