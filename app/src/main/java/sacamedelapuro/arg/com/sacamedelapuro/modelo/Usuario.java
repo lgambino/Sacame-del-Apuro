@@ -7,10 +7,11 @@ package sacamedelapuro.arg.com.sacamedelapuro.modelo;
 public class Usuario {
 
     private Integer id;
-    private String username;
-    private String nombre;
+    private String username; // email
+    private String pass;
+    private String nombre; // de persona o empresa
+    private String celular;
     private String dni;
-    private Contacto contacto;
     private Rol rol;
     private Servicio servicio;
     private Ubicacion ubicacion;
@@ -20,25 +21,27 @@ public class Usuario {
 
     }
 
-    public Usuario(Integer id, String username, String nombre, Rol rol, Ubicacion ubicacion, String dni, Contacto contacto) {
+    public Usuario(Integer id, String username, String pass, String nombre, String celular, String dni, Rol rol, Ubicacion ubicacion) {
         this.id = id;
         this.username = username;
+        this.pass = pass;
         this.nombre = nombre;
+        this.celular = celular;
         this.rol = rol;
         this.ubicacion = ubicacion;
         this.dni = dni;
-        this.contacto = contacto;
     }
 
-    public Usuario(Integer id, String username, String nombre, String dni, Contacto contacto, Rol rol, Ubicacion ubicacion, Servicio servicio) {
+    public Usuario(Integer id, String username, String pass, String nombre, String celular, String dni, Rol rol, Servicio servicio, Ubicacion ubicacion) {
         this.id = id;
         this.username = username;
+        this.pass = pass;
         this.nombre = nombre;
+        this.celular = celular;
         this.dni = dni;
-        this.contacto = contacto;
         this.rol = rol;
-        this.ubicacion = ubicacion;
         this.servicio = servicio;
+        this.ubicacion = ubicacion;
     }
 
     public Integer getId() {
@@ -57,6 +60,14 @@ public class Usuario {
         this.username = username;
     }
 
+    public String getPass() {
+        return pass;
+    }
+
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
+
     public String getNombre() {
         return nombre;
     }
@@ -65,20 +76,20 @@ public class Usuario {
         this.nombre = nombre;
     }
 
+    public String getCelular() {
+        return celular;
+    }
+
+    public void setCelular(String celular) {
+        this.celular = celular;
+    }
+
     public String getDni() {
         return dni;
     }
 
     public void setDni(String dni) {
         this.dni = dni;
-    }
-
-    public Contacto getContacto() {
-        return contacto;
-    }
-
-    public void setContacto(Contacto contacto) {
-        this.contacto = contacto;
     }
 
     public Rol getRol() {

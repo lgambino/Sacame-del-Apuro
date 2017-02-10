@@ -42,7 +42,7 @@ public class RolDao extends GenericDaoImpl<Rol>{
         super.save(rol);
 
         ContentValues valores = new ContentValues();
-        valores.put(TABLA, rol.getNombre());
+        valores.put(COLUMNAS[0], rol.getNombre());
 
         bd.insert(TABLA, null, valores);
 
@@ -54,7 +54,7 @@ public class RolDao extends GenericDaoImpl<Rol>{
         super.update(rol);
 
         ContentValues valores = new ContentValues();
-        valores.put(TABLA, rol.getNombre());
+        valores.put(COLUMNAS[0], rol.getNombre());
 
         bd.update(TABLA, valores, "_id=?", new String[]{rol.getId().toString()});
 
