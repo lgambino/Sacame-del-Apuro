@@ -1,5 +1,6 @@
 package sacamedelapuro.arg.com.sacamedelapuro.dao;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 
 import java.util.List;
@@ -10,13 +11,17 @@ import java.util.List;
 
 public interface GenericDao<T> {
 
-    void delete(Integer id);
+    void delete(String tabla, Integer id);
 
-    Cursor get(Integer id);
+    void escribir();
 
-    Cursor getAll();
+    Cursor get(String tabla, String[] campos, Integer id);
 
-    void save(T t);
+    Cursor getAll(String tabla);
 
-    void update(T t);
+    void leer();
+
+    void save(String tabla, ContentValues valores);
+
+    void update(String tabla, ContentValues valores, Integer id);
 }

@@ -3,6 +3,7 @@ package sacamedelapuro.arg.com.sacamedelapuro.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.provider.BaseColumns;
 
 import sacamedelapuro.arg.com.sacamedelapuro.modelo.TipoServicio;
 
@@ -12,50 +13,46 @@ import sacamedelapuro.arg.com.sacamedelapuro.modelo.TipoServicio;
 
 public class TipoServicioDao extends GenericDaoImpl<TipoServicio>{
 
-    public static String TABLA = "TIPO_SERVICIO";
-    public static String[] COLUMNAS =  {"NOMBRE"};
-
 
     public TipoServicioDao(Context context) {
         super(context);
     }
 
-    @Override
+    public static class TablaTipoServicio implements BaseColumns {
+        public static final String TABLA = "TIPO_SERVICIO";
+        public static final String COLUMNA_NOMBRE = "NOMBRE";
+    }
+
+    private static final String[] columnas = {"NOMBRE"};
+
     public void delete(Integer id) {
-        super.delete(id);
+        super.delete(TablaTipoServicio.TABLA, id);
     }
 
-    @Override
     public Cursor get(Integer id) {
-        return super.get(id);
+        return super.get(TablaTipoServicio.TABLA, columnas, id);
     }
 
-    @Override
     public Cursor getAll() {
-        return super.getAll();
+        return super.getAll(TablaTipoServicio.TABLA);
     }
 
-    @Override
     public void save(TipoServicio tipoServicio) {
-        super.save(tipoServicio);
+        ContentValues valores = valoresAll(tipoServicio);
 
-        ContentValues valores = new ContentValues();
-        valores.put(COLUMNAS[0], tipoServicio.getNombre());
-
-        bd.insert(TABLA, null, valores);
-
-        bd = conexionBD.getReadableDatabase();
+        super.save(TablaTipoServicio.TABLA, valores);
     }
 
-    @Override
     public void update(TipoServicio tipoServicio) {
-        super.update(tipoServicio);
+        ContentValues valores = valoresAll(tipoServicio);
 
+        super.update(TablaTipoServicio.TABLA, valores, tipoServicio.getId());
+    }
+
+    private ContentValues valoresAll(TipoServicio tipoServicio){
         ContentValues valores = new ContentValues();
-        valores.put(COLUMNAS[0], tipoServicio.getNombre());
+        valores.put(TablaTipoServicio.COLUMNA_NOMBRE, tipoServicio.getNombre());
 
-        bd.update(TABLA, valores, "_id=?", new String[]{tipoServicio.getId().toString()});
-
-        bd = conexionBD.getReadableDatabase();
+        return valores;
     }
 }

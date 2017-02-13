@@ -17,9 +17,6 @@ import sacamedelapuro.arg.com.sacamedelapuro.ConexionBD;
 
 public class GenericDaoImpl<T> implements GenericDao<T> {
 
-    public static String TABLA = "TABLA";
-    public static String[] COLUMNAS =  {"COLUMNA1", "COLUMNA2"};
-
     protected ConexionBD conexionBD;
     protected SQLiteDatabase bd;
 
@@ -29,36 +26,55 @@ public class GenericDaoImpl<T> implements GenericDao<T> {
     }
 
     @Override
-    public void delete(Integer id) {
-        bd = conexionBD.getWritableDatabase();
-        bd.delete(TABLA,"_id=?",new String[]{id.toString()});
+    public void delete(String tabla, Integer id) {
+        escribir();
+
+        bd.delete(tabla,"_id=?",new String[]{id.toString()});
     }
 
     @Override
-    public Cursor get(Integer id) {
-        bd = conexionBD.getReadableDatabase();
+    public Cursor get(String tabla, String[] campos, Integer id) {
+        leer();
 
-        Cursor cursor = bd.query(TABLA, COLUMNAS, "_id=" + id.toString(), null, null, null, null);
+        Cursor cursor = bd.query(tabla, campos, "_id=" + id.toString(), null, null, null, null);
 
         return cursor;
     }
 
     @Override
-    public Cursor getAll() {
-        bd = conexionBD.getReadableDatabase();
+    public Cursor getAll(String tabla) {
+        leer();
 
-        Cursor cursor = bd.rawQuery("SELECT " + COLUMNAS + " FROM " + TABLA, null);
+        Cursor cursor = bd.rawQuery("SELECT * FROM " + tabla, null);
 
         return cursor;
     }
 
     @Override
-    public void save(T t) {
-        bd = conexionBD.getWritableDatabase();
+    public void save(String tabla, ContentValues valores) {
+        escribir();
+
+        bd.insert(tabla, null, valores);
+
+        bd = conexionBD.getReadableDatabase();
     }
 
     @Override
-    public void update(T t) {
+    public void update(String tabla, ContentValues valores, Integer id) {
+        escribir();
+
+        bd.update(tabla, valores, "_id=?", new String[]{id.toString()});
+
+        bd = conexionBD.getReadableDatabase();
+    }
+
+    @Override
+    public void leer() {
+        bd = conexionBD.getReadableDatabase();
+    }
+
+    @Override
+    public void escribir() {
         bd = conexionBD.getWritableDatabase();
     }
 }

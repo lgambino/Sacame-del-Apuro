@@ -32,6 +32,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import sacamedelapuro.arg.com.sacamedelapuro.dao.UsuarioDao;
+
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
@@ -61,6 +63,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private UsuarioDao usuarioDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +103,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        usuarioDao = new UsuarioDao(this);
     }
 
     private void populateAutoComplete() {
@@ -167,8 +172,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         boolean cancel = false;
         View focusView = null;
 
+
+        // Check pass
+        if (TextUtils.isEmpty(password)) {
+            mEmailView.setError("Este campo es requerido.");
+            focusView = mEmailView;
+            cancel = true;
+        }
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        else if (!isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -176,7 +188,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
+            mEmailView.setError("Este campo es requerido.");
             focusView = mEmailView;
             cancel = true;
         } else if (!isEmailValid(email)) {
@@ -215,11 +227,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isEmailRegistrado(String email) {
-
-
-
-
-        return false;
+        return usuarioDao.existeUsername(email);
     }
 
     private boolean isPasswordValid(String password) {

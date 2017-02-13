@@ -4,6 +4,7 @@ package sacamedelapuro.arg.com.sacamedelapuro.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.provider.BaseColumns;
 
 import sacamedelapuro.arg.com.sacamedelapuro.modelo.Usuario;
 
@@ -13,64 +14,85 @@ import sacamedelapuro.arg.com.sacamedelapuro.modelo.Usuario;
 
 public class UsuarioDao extends GenericDaoImpl<Usuario> {
 
-    public static String TABLA = "USUARIO";
-    public static String[] COLUMNAS =  {"USERNAME", "PASS", "NOMBRE", "CELULAR", "DNI", "ID_ROL", "ID_SERVICIO", "ID_UBICACION"};
-
 
     public UsuarioDao(Context context) {
         super(context);
     }
 
-    @Override
+    public static class TablaUsuario implements BaseColumns {
+        public static final String TABLA = "USUARIO";
+        public static final String COLUMNA_USERNAME = "USERNAME";
+        public static final String COLUMNA_PASS = "PASS";
+        public static final String COLUMNA_NOMBRE = "NOMBRE";
+        public static final String COLUMNA_CELULAR = "CELULAR";
+        public static final String COLUMNA_DNI = "DNI";
+        public static final String COLUMNA_ID_ROL = "ID_ROL";
+        public static final String COLUMNA_ID_SERVICIO = "ID_SERVICIO";
+        public static final String COLUMNA_ID_UBICACION = "ID_UBICACION";
+    }
+
+    private static final String[] columnas = {"USERNAME", "PASS", "NOMBRE", "CELULAR", "DNI", "ID_ROL", "ID_SERVICIO", "ID_UBICACION"};
+
+
     public void delete(Integer id) {
-        super.delete(id);
+        super.delete(TablaUsuario.TABLA, id);
     }
 
-    @Override
     public Cursor get(Integer id) {
-        return super.get(id);
+        return super.get(TablaUsuario.TABLA, columnas, id);
     }
 
-    @Override
+    public Cursor getUsuario(String username){
+        super.leer();
+
+        Cursor cursor = bd.query(TablaUsuario.TABLA, columnas, "username=" + username, null, null, null, null);
+
+        return cursor;
+    }
+
+    public boolean existeUsername(String username){
+
+        Cursor cursor = getUsuario(username);
+
+        boolean existe = false;
+        if (cursor.moveToFirst()) {
+            do {
+                existe = true;
+            } while(cursor.moveToNext());
+        }
+
+        return existe;
+    }
+
     public Cursor getAll() {
-        return super.getAll();
+        return super.getAll(TablaUsuario.TABLA);
     }
 
-    @Override
     public void save(Usuario usuario) {
-        super.save(usuario);
 
-        ContentValues valores = new ContentValues();
-        valores.put(COLUMNAS[0], usuario.getUsername());
-        valores.put(COLUMNAS[1], usuario.getPass());
-        valores.put(COLUMNAS[2], usuario.getNombre());
-        valores.put(COLUMNAS[3], usuario.getCelular());
-        valores.put(COLUMNAS[4], usuario.getDni());
-        valores.put(COLUMNAS[5], usuario.getRol().getId());
-        valores.put(COLUMNAS[6], usuario.getServicio().getId());
-        valores.put(COLUMNAS[7], usuario.getUbicacion().getId());
+        ContentValues valores = valoresAll(usuario);
 
-        bd.insert(TABLA, null, valores);
-
-        bd = conexionBD.getReadableDatabase();
+        super.save(TablaUsuario.TABLA, valores);
     }
 
-    @Override
     public void update(Usuario usuario) {
-        super.update(usuario);
 
+        ContentValues valores = valoresAll(usuario);
+
+        super.update(TablaUsuario.TABLA, valores, usuario.getId());
+    }
+
+    private ContentValues valoresAll(Usuario usuario){
         ContentValues valores = new ContentValues();
-        valores.put(COLUMNAS[0], usuario.getUsername());
-        valores.put(COLUMNAS[1], usuario.getPass());
-        valores.put(COLUMNAS[2], usuario.getNombre());
-        valores.put(COLUMNAS[3], usuario.getCelular());
-        valores.put(COLUMNAS[4], usuario.getDni());
-        valores.put(COLUMNAS[5], usuario.getRol().getId());
-        valores.put(COLUMNAS[6], usuario.getServicio().getId());
-        valores.put(COLUMNAS[7], usuario.getUbicacion().getId());
+        valores.put(TablaUsuario.COLUMNA_USERNAME, usuario.getUsername());
+        valores.put(TablaUsuario.COLUMNA_PASS, usuario.getPass());
+        valores.put(TablaUsuario.COLUMNA_NOMBRE, usuario.getNombre());
+        valores.put(TablaUsuario.COLUMNA_CELULAR, usuario.getCelular());
+        valores.put(TablaUsuario.COLUMNA_DNI, usuario.getDni());
+        valores.put(TablaUsuario.COLUMNA_ID_ROL, usuario.getRol().getId());
+        valores.put(TablaUsuario.COLUMNA_ID_SERVICIO, usuario.getServicio().getId());
+        valores.put(TablaUsuario.COLUMNA_ID_UBICACION, usuario.getUbicacion().getId());
 
-        bd.update(TABLA, valores, "_id=?", new String[]{usuario.getId().toString()});
-
-        bd = conexionBD.getReadableDatabase();
+        return valores;
     }
 }

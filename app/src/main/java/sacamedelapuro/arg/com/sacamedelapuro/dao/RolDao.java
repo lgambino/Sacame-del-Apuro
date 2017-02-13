@@ -3,7 +3,7 @@ package sacamedelapuro.arg.com.sacamedelapuro.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-
+import android.provider.BaseColumns;
 
 
 import sacamedelapuro.arg.com.sacamedelapuro.modelo.Rol;
@@ -14,50 +14,47 @@ import sacamedelapuro.arg.com.sacamedelapuro.modelo.Rol;
 
 public class RolDao extends GenericDaoImpl<Rol>{
 
-    public static String TABLA = "ROL";
-    public static String[] COLUMNAS =  {"NOMBRE"};
-
 
     public RolDao(Context context) {
         super(context);
     }
 
-    @Override
+    public static class TablaRol implements BaseColumns {
+        public static final String TABLA = "ROL";
+        public static final String COLUMNA_NOMBRE = "NOMBRE";
+    }
+
+    private static final String[] columnas = {"NOMBRE"};
+
+
     public void delete(Integer id) {
-        super.delete(id);
+        super.delete(TablaRol.TABLA, id);
     }
 
-    @Override
     public Cursor get(Integer id) {
-        return super.get(id);
+        return super.get(TablaRol.TABLA, columnas, id);
     }
 
-    @Override
     public Cursor getAll() {
-        return super.getAll();
+        return super.getAll(TablaRol.TABLA);
     }
 
-    @Override
     public void save(Rol rol) {
-        super.save(rol);
+        ContentValues valores = valoresAll(rol);
 
-        ContentValues valores = new ContentValues();
-        valores.put(COLUMNAS[0], rol.getNombre());
-
-        bd.insert(TABLA, null, valores);
-
-        bd = conexionBD.getReadableDatabase();
+        super.save(TablaRol.TABLA, valores);
     }
 
-    @Override
     public void update(Rol rol) {
-        super.update(rol);
+        ContentValues valores = valoresAll(rol);
 
+        super.update(TablaRol.TABLA, valores, rol.getId());
+    }
+
+    private ContentValues valoresAll(Rol rol){
         ContentValues valores = new ContentValues();
-        valores.put(COLUMNAS[0], rol.getNombre());
+        valores.put(TablaRol.COLUMNA_NOMBRE, rol.getNombre());
 
-        bd.update(TABLA, valores, "_id=?", new String[]{rol.getId().toString()});
-
-        bd = conexionBD.getReadableDatabase();
+        return valores;
     }
 }
