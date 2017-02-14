@@ -61,16 +61,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        switch (requestCode) {
-            case CODIGO_LOGIN:
-                // Resultado
-                if (resultCode == Activity.RESULT_OK) {
-                    usuario=(Usuario) data.getExtras().get("usuario");
-                    continuacionOnCreate();
-                }
-                else finish();
-                break;
+        if(requestCode==CODIGO_LOGIN) {
+            // Resultado
+            if (resultCode == Activity.RESULT_OK) {
+                usuario = (Usuario) data.getExtras().get("usuario");
+                continuacionOnCreate();
+            } else finish();
         }
+        else finish();
+
     }
 
     @Override
