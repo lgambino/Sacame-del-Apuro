@@ -114,12 +114,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         // *** sólo activar para borrar la BD ***
 
-       /* ConexionBD conexionBD = new ConexionBD(this);
+        ConexionBD conexionBD = new ConexionBD(this);
         try {
             conexionBD.deleteBD();
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     private void populateAutoComplete() {
@@ -204,7 +204,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if(cancel==false){
             // Check for a valid email address.
             if (TextUtils.isEmpty(email)) {
-                mEmailView.setError(getString(R.string.error_field_required));
+                mEmailView.setError("Este campo es requerido.");
                 focusView = mEmailView;
                 cancel = true;
             } else if (!isEmailValid(email)) {
@@ -220,9 +220,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         focusView = mPasswordView;
                         cancel = true;
                     }
-                    else{ // EXITOOOO --------- Sacar de aca el método
-                        usuario= usuarioDao.getUsuario(email);
-                    }
                 }
                 else { // quiso entrar pero el correo no existe
                     mEmailView.setError("Este email no se encuentra registrado.");
@@ -236,9 +233,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     focusView = mEmailView;
                     cancel = true;
                 }
-                else { // EXITOOOO --------------- Sacar de aca el nuevoUsuario
+                else {
                     // se registra el nuevo usuario
-                    usuario=nuevoUsuario(email, password);
+                    nuevoUsuario(email, password);
                 }
             }
 
@@ -246,18 +243,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 // There was an error; don't attempt login and focus the first
                 // form field with an error.
                 focusView.requestFocus();
-
-            } else { // EXITOOOOO -----------
+            } else {
                 // Show a progress spinner, and kick off a background task to
                 // perform the user login attempt.
-                showProgress(true);
-                mAuthTask = new UserLoginTask(email, password, esNuevo);
-                mAuthTask.execute((Void) null);
 
-                // Tal vez borrar este, y dejar el del Async solamente
-                Intent retorno= new Intent();
-                retorno.putExtra("usuario", usuario);
-                setResult(MainActivity.RESULT_OK, retorno);
+                usuarioDao = new UsuarioDao(this);
+                usuario = usuarioDao.getUsuario(email);
+
+                showProgress(true);
+                mAuthTask = new UserLoginTask(email, password);
+                mAuthTask.execute((Void) null);
             }
         }
 
@@ -265,7 +260,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Mejorar la validacion
+        //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
@@ -280,11 +275,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Mejorar la validacion
+        //TODO: Replace this with your own logic
         return password.length() > 4;
     }
 
-    private Usuario nuevoUsuario(String username, String pass){
+    private void nuevoUsuario(String username, String pass){
         usuarioDao = new UsuarioDao(this);
         Usuario usuario = new Usuario();
         usuario.setUsername(username);
@@ -301,7 +296,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         usuario.setUbicacion(new Ubicacion());
 
         usuarioDao.save(usuario);
-        return usuario;
     }
 
     /**
@@ -402,34 +396,32 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
-        private final Boolean esNuevo;
 
-        UserLoginTask(String email, String password, Boolean esNuev) {
+        UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
-            esNuevo = esNuev;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            // TODO: attempt authentication against a network service.
 
-            // Autenticación
             try {
                 // Simulate network access.
-                Thread.sleep(500);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 return false;
             }
-/*
+
             for (String credential : DUMMY_CREDENTIALS) {
                 String[] pieces = credential.split(":");
                 if (pieces[0].equals(mEmail)) {
                     // Account exists, return true if the password matches.
                     return pieces[1].equals(mPassword);
                 }
-            }*/
+            }
 
-            // TODO: Acá se debería registrar la nueva cuenta!
+            // TODO: register the new account here.
             return true;
         }
 
@@ -454,5 +446,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }

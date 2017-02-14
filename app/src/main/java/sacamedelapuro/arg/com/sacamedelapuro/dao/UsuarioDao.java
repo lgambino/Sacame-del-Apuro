@@ -14,6 +14,9 @@ import sacamedelapuro.arg.com.sacamedelapuro.modelo.Servicio;
 import sacamedelapuro.arg.com.sacamedelapuro.modelo.Ubicacion;
 import sacamedelapuro.arg.com.sacamedelapuro.modelo.Usuario;
 
+/**
+ * Created by lgambino on 08/02/2017.
+ */
 
 public class UsuarioDao extends GenericDaoImpl<Usuario> {
 
@@ -131,6 +134,14 @@ public class UsuarioDao extends GenericDaoImpl<Usuario> {
         }
 
         return usuarios;
+    }
+
+    public List<Usuario> getUsuariosComunes(){
+        return getAllPorRol(1); // código de usuarios comunes
+    }
+
+    public List<Usuario> getPrestadores(){
+        return getAllPorRol(2); // código de prestadores
     }
 
     public void save(Usuario usuario) {
