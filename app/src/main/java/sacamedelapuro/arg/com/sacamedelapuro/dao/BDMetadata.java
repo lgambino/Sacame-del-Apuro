@@ -17,33 +17,4 @@ public class BDMetadata {
     public static final String TABLA_TIPO_SERVICIO= "TIPO_SERVICIO";
     public static final String TABLA_UBICACION= "UBICACION";
     public static final String TABLA_USUARIO= "USUARIO";
-
-
-
-    public static class TablaContactoMetadata implements BaseColumns {
-        public static final String EMPRESA = "";
-        public static final String NUM = "";
-        public static final String EMAIL = "";
-
-    }
-
-    public static class TablaRolMetadata implements BaseColumns {
-        public static final String NOMBRE = "NOMBRE";
-    }
-
-    public static class TablaServicioMetadata implements BaseColumns {
-
-    }
-
-    public static class TablaTipoServicioMetadata implements BaseColumns {
-
-    }
-
-    public static class TablaUbicacionMetadata implements BaseColumns {
-
-    }
-
-    public static class TablaUsuarioMetadata implements BaseColumns {
-
-    }
 }

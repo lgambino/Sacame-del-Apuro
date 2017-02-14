@@ -12,6 +12,7 @@ public class Usuario {
     private String nombre; // de persona o empresa
     private String celular;
     private String dni;
+    private String imagen; // url
     private Rol rol;
     private Servicio servicio;
     private Ubicacion ubicacion;
@@ -21,24 +22,28 @@ public class Usuario {
 
     }
 
-    public Usuario(Integer id, String username, String pass, String nombre, String celular, String dni, Rol rol, Ubicacion ubicacion) {
+    public Usuario(Integer id, String username, String pass, String nombre, String celular,
+                   String dni, String imagen, Rol rol, Ubicacion ubicacion) {
         this.id = id;
         this.username = username;
         this.pass = pass;
         this.nombre = nombre;
         this.celular = celular;
+        this.imagen = imagen;
         this.rol = rol;
         this.ubicacion = ubicacion;
         this.dni = dni;
     }
 
-    public Usuario(Integer id, String username, String pass, String nombre, String celular, String dni, Rol rol, Servicio servicio, Ubicacion ubicacion) {
+    public Usuario(Integer id, String username, String pass, String nombre, String celular,
+                   String dni, String imagen, Rol rol, Servicio servicio, Ubicacion ubicacion) {
         this.id = id;
         this.username = username;
         this.pass = pass;
         this.nombre = nombre;
         this.celular = celular;
         this.dni = dni;
+        this.imagen = imagen;
         this.rol = rol;
         this.servicio = servicio;
         this.ubicacion = ubicacion;
@@ -90,6 +95,14 @@ public class Usuario {
 
     public void setDni(String dni) {
         this.dni = dni;
+    }
+
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
     }
 
     public Rol getRol() {

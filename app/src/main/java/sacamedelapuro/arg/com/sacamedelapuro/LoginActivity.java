@@ -29,10 +29,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import sacamedelapuro.arg.com.sacamedelapuro.dao.UsuarioDao;
+import sacamedelapuro.arg.com.sacamedelapuro.modelo.Rol;
+import sacamedelapuro.arg.com.sacamedelapuro.modelo.Servicio;
+import sacamedelapuro.arg.com.sacamedelapuro.modelo.Ubicacion;
+import sacamedelapuro.arg.com.sacamedelapuro.modelo.Usuario;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -94,7 +99,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
 
         Button mRegistrarButton = (Button) findViewById(R.id.registrar_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        mRegistrarButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin(true);
@@ -104,7 +109,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        usuarioDao = new UsuarioDao(this);
+
+        // *** sólo activar para borrar la BD ***
+
+       /* ConexionBD conexionBD = new ConexionBD(this);
+        try {
+            conexionBD.deleteBD();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
     }
 
     private void populateAutoComplete() {
@@ -175,8 +188,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         // Check pass
         if (TextUtils.isEmpty(password)) {
-            mEmailView.setError("Este campo es requerido.");
-            focusView = mEmailView;
+            mPasswordView.setError("Este campo es requerido.");
+            focusView = mPasswordView;
             cancel = true;
         }
         // Check for a valid password, if the user entered one.
@@ -186,39 +199,58 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             cancel = true;
         }
 
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError("Este campo es requerido.");
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
-        }
-        else if(esNuevo && isEmailRegistrado(email)){
-            mEmailView.setError("Este email ya se encuentra registrado.");
-            focusView = mEmailView;
-            cancel = true;
-        }
-        else if(!esNuevo && !isEmailRegistrado(email)){
-            mEmailView.setError("Este email no se encuentra registrado.");
-            focusView = mEmailView;
-            cancel = true;
+        if(cancel==false){
+            // Check for a valid email address.
+            if (TextUtils.isEmpty(email)) {
+                mEmailView.setError("Este campo es requerido.");
+                focusView = mEmailView;
+                cancel = true;
+            } else if (!isEmailValid(email)) {
+                mEmailView.setError(getString(R.string.error_invalid_email));
+                focusView = mEmailView;
+                cancel = true;
+            }
+            else if(!esNuevo){ // presionó entrar
+                if(isEmailRegistrado(email)){ // se encontró ese correo, está registrado
+                    if(!isUserPassValido(email, password)){
+                        // si no coincide la contraseña con el username, cancela, si no, pasa
+                        mPasswordView.setError("La contraseña no coincide con el email ingresado.");
+                        focusView = mPasswordView;
+                        cancel = true;
+                    }
+                }
+                else { // quiso entrar pero el correo no existe
+                    mEmailView.setError("Este email no se encuentra registrado.");
+                    focusView = mEmailView;
+                    cancel = true;
+                }
+            }
+            else { // presionó registrar, es nuevo
+                if (isEmailRegistrado(email)) { // el correo ingresado ya existe
+                    mEmailView.setError("Este email ya se encuentra registrado.");
+                    focusView = mEmailView;
+                    cancel = true;
+                }
+                else {
+                    // se registra el nuevo usuario
+                    nuevoUsuario(email, password);
+                }
+            }
+
+            if (cancel) {
+                // There was an error; don't attempt login and focus the first
+                // form field with an error.
+                focusView.requestFocus();
+            } else {
+                // Show a progress spinner, and kick off a background task to
+                // perform the user login attempt.
+                showProgress(true);
+                mAuthTask = new UserLoginTask(email, password);
+                mAuthTask.execute((Void) null);
+            }
         }
 
-
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
-        }
+        else focusView.requestFocus();
     }
 
     private boolean isEmailValid(String email) {
@@ -227,12 +259,37 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isEmailRegistrado(String email) {
+        usuarioDao = new UsuarioDao(this);
         return usuarioDao.existeUsername(email);
+    }
+
+    private boolean isUserPassValido(String username, String pass) {
+        usuarioDao = new UsuarioDao(this);
+        return usuarioDao.validarPass(username, pass);
     }
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return password.length() > 4;
+    }
+
+    private void nuevoUsuario(String username, String pass){
+        usuarioDao = new UsuarioDao(this);
+        Usuario usuario = new Usuario();
+        usuario.setUsername(username);
+        usuario.setPass(pass);
+        usuario.setNombre("Completar Nombre");
+        usuario.setCelular("1234");
+        usuario.setDni("00000000");
+
+        Rol rolAux = new Rol();
+        rolAux.setId(1);
+
+        usuario.setRol(rolAux);
+        usuario.setServicio(new Servicio());
+        usuario.setUbicacion(new Ubicacion());
+
+        usuarioDao.save(usuario);
     }
 
     /**
@@ -382,4 +439,3 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 }
-

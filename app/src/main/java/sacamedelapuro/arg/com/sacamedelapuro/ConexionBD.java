@@ -48,6 +48,10 @@ public class ConexionBD extends SQLiteOpenHelper {
         onUpgrade(db, oldVersion, newVersion);
     }
 
+    public void deleteBD() throws IOException{
+        context.deleteDatabase(BDMetadata.NOMBRE_BD);
+    }
+
     public ArrayList<String> leerTablas() throws IOException {
         InputStream is = context.getAssets().open("base_de_datos.sql");
         InputStreamReader r = new InputStreamReader(is, Charset.forName("UTF-8"));

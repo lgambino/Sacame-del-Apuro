@@ -13,6 +13,10 @@ public class Rol {
     public Rol() {
     }
 
+    public Rol(Integer id) {
+        this.id = id;
+    }
+
     public Rol(Integer id, String nombre) {
         this.id = id;
         this.nombre = nombre;

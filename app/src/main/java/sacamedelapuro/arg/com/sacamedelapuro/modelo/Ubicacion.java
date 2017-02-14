@@ -17,6 +17,18 @@ public class Ubicacion {
 
     }
 
+    public Ubicacion(Integer id) {
+        this.id = id;
+    }
+
+    public Ubicacion(Integer id, String latitud, String longitud, String direccion) {
+        this.id = id;
+        this.latitud = latitud;
+        this.longitud = longitud;
+        this.direccion = direccion;
+    }
+
+
     public Integer getId() {
         return id;
     }
