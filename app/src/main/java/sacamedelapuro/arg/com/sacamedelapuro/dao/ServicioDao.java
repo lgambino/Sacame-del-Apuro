@@ -5,7 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.BaseColumns;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import sacamedelapuro.arg.com.sacamedelapuro.modelo.Servicio;
+import sacamedelapuro.arg.com.sacamedelapuro.modelo.TipoServicio;
 
 /**
  * Created by lgambino on 08/02/2017.
@@ -40,6 +44,31 @@ public class ServicioDao extends GenericDaoImpl<Servicio>{
 
     public Cursor getAll() {
         return super.getAll(TablaServicio.TABLA);
+    }
+
+    public List<Servicio> getAllPorTipo(Integer idTipoServicio) {
+        leer();
+
+        Cursor cursor = bd.rawQuery("SELECT * FROM " + TablaServicio.TABLA + " WHERE id_tipo="+ idTipoServicio, null);
+
+
+        List<Servicio> servicios = new ArrayList<Servicio>();
+        if (cursor.moveToFirst()) {
+            do {
+                Servicio servicio = new Servicio();
+
+                servicio.setNombre(cursor.getString(0));
+                servicio.setDescripcion(cursor.getString(1));
+                servicio.setObservaciones(cursor.getString(2));
+                servicio.setPrecio(cursor.getInt(3));
+                servicio.setTipo(new TipoServicio(cursor.getInt(4)));
+
+                servicios.add(servicio);
+
+            } while(cursor.moveToNext());
+        }
+
+        return servicios;
     }
 
     public void save(Servicio servicio) {

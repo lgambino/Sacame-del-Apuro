@@ -16,6 +16,10 @@ public class TipoServicio implements Serializable{
 
     }
 
+    public TipoServicio(Integer id) {
+        this.id = id;
+    }
+
     public TipoServicio(Integer id, String nombre) {
         this.id = id;
         this.nombre = nombre;
