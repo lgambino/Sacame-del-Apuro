@@ -11,6 +11,7 @@ import sacamedelapuro.arg.com.sacamedelapuro.mapa.MapaActivity;
 
 public class BuscarCercanosActivity extends AppCompatActivity {
 
+    private final int CODIGO_ORIGEN_BUSCAR=1;
     private Button btnBuscar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +24,7 @@ public class BuscarCercanosActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent i = new Intent(BuscarCercanosActivity.this, MapaActivity.class);
                 i.putExtra("distancia_inicial", 2); // Distancia inicial de 2 kms - NO usada
+                i.putExtra("origen",CODIGO_ORIGEN_BUSCAR);
                 startActivity(i);
             }
         });

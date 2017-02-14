@@ -39,7 +39,26 @@
 
         <activity android:name=".mapa.MapaActivity" />
         <activity android:name=".mapa.DistanciaActivity"/>
-        <receiver android:name=".mapa.BroadcastMapa" />
+
+        <receiver android:name=".mapa.BroadcastMapa"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="200">
+                <action android:name="android.intent.ACTION.VIEW" />
+                <data android:scheme="geo" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter android:priority="200">
+                <action android:name="Intent.ACTION.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter android:priority="200">
+                <action android:name="android.intent.ACTION.VIEW" />
+            </intent-filter>
+            <intent-filter android:priority="200">
+                <action android:name="android.intent.ACTION.SEND" />
+            </intent-filter>
+        </receiver>>
     </application>
 
 </manifest>

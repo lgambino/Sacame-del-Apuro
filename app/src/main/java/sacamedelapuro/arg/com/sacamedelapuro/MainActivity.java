@@ -2,6 +2,7 @@ package sacamedelapuro.arg.com.sacamedelapuro;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -35,6 +36,26 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, LoginActivity.class);
         startActivityForResult(intent,CODIGO_LOGIN);
 
+    }
+
+
+    // Prueba - NO USADO
+    protected void intentEjemplo(){
+
+        Uri gmmIntentUri = Uri.parse("geo:37.7749,-122.4194");
+        Intent mapIntent = new Intent();
+        mapIntent.setAction(Intent.ACTION_VIEW);
+        mapIntent.putExtra("uri", gmmIntentUri);
+        //mapIntent.setPackage("com.google.android.apps.maps");
+
+        String title = "titulo";
+
+        // Forzar el selector de aplicación
+        Intent chooser = Intent.createChooser(mapIntent, title);
+
+        if (mapIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(chooser);
+        }
     }
 
     // Metodo creado para cuando el login es exitoso

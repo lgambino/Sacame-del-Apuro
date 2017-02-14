@@ -41,7 +41,12 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
     private final int CODIGO_RESULTADO_0=0;
     private final int CODIGO_PEDIDO_PERMISOS=3;
     private final int CODIGO_RESULTADO_DISTANCIA =4;
+    private LatLng posic;
+    private int origen;
 
+    // Dentro de la app, o proveniente del broadcast
+    private final int CODIGO_ORIGEN_BUSCAR=1;
+    private final int CODIGO_ORIGEN_BROADCAST=2;
 
     private ArrayList<LatLng> proveedores;
     Vibrator v;
@@ -55,6 +60,10 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //distancia= Float.valueOf(getIntent().getExtras().get("distancia_inicial").toString());
 
+        origen=(int)getIntent().getExtras().get("origen");
+        if (origen== CODIGO_ORIGEN_BUSCAR){
+                posic=(LatLng) getIntent().getExtras().get("posicion");
+        }
 
         txtDistancia= (TextView) findViewById(R.id.txtDistancia);
 
@@ -119,15 +128,26 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private LatLng getPosicion(){
 
-        // Obtener la posicion actual - Idealmente no usar esta forma, sino la tercera
-        Location loc = miMapa.getMyLocation();
+        LatLng retorno= new LatLng(0,0);
 
-        // Sino poner una posicion de marcador
+        switch (origen){
+            case CODIGO_ORIGEN_BROADCAST:
+                // Posicion recibida en el broadcast
+                retorno=posic;
+                break;
 
-        // O usar Location currentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-        // Ver mas en https://developer.android.com/training/location/retrieve-current.html
+            case CODIGO_ORIGEN_BUSCAR:
+                // Obtener la posicion actual - Idealmente no usar esta forma, sino siguiente
+                Location loc = miMapa.getMyLocation();
 
-        return new LatLng(loc.getLatitude(), loc.getLongitude());
+                // Usar Location currentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+                // Ver mas en https://developer.android.com/training/location/retrieve-current.html
+
+                retorno = new LatLng(loc.getLatitude(), loc.getLongitude());
+                break;
+        }
+
+        return retorno;
     }
 
     @Override
