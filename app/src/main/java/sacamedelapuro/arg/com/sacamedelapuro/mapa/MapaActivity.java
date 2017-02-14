@@ -37,6 +37,7 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap miMapa;
     private Button btnDistancia;
     private TextView txtDistancia;
+    private float distancia;
     private final int CODIGO_RESULTADO_0=0;
     private final int CODIGO_PEDIDO_PERMISOS=3;
     private final int CODIGO_RESULTADO_DISTANCIA =4;
@@ -52,8 +53,8 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         v =  (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
-        // Poner aca? NO Tiene que ser asincrónico
-        //proveedores = buscarProveedores();
+        //distancia= Float.valueOf(getIntent().getExtras().get("distancia_inicial").toString());
+
 
         txtDistancia= (TextView) findViewById(R.id.txtDistancia);
 
@@ -91,8 +92,8 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         miMapa.setMyLocationEnabled(true);
 
-        // TODO Llamada asincrónica a que ponga todos los marcadores en el mapa
-        // Distancia inicial de 2 kms
+        // Distancia inicial
+        //generarNuevosProveedores(distancia);
     }
 
     @Override
@@ -102,17 +103,18 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
             case CODIGO_RESULTADO_DISTANCIA:
                 // Resultado
                 if (resultCode == Activity.RESULT_OK) {
-                    Float distancia= (Float) data.getExtras().get("activity_pedido_distancia");
-                    generarNuevosProveedores(distancia);
+                    Float dist= (Float) data.getExtras().get("activity_pedido_distancia");
+                    distancia=dist;
+                    generarNuevosProveedores(dist);
                 }
                 break;
         }
     }
 
-    private void generarNuevosProveedores(float distancia){
+    private void generarNuevosProveedores(float dist){
         // Obtener la distancia del extra
         LatLng posicion= getPosicion();
-        new generarProveedoresAsync(miMapa, txtDistancia, distancia, posicion).execute();
+        new generarProveedoresAsync(miMapa, txtDistancia, dist, posicion).execute();
     }
 
     private LatLng getPosicion(){

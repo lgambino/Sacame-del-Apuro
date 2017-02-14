@@ -37,7 +37,8 @@ public class generarProveedoresAsync extends AsyncTask<Object[] , Integer, Array
     }
 
     protected void onPostExecute(ArrayList<LatLng> result) {
-        txtDistancia.setText("Dist. actual(kms): "+distancia);
+        txtDistancia.setText(" Dist. actual(kms): "+distancia+" ");
+        txtDistancia.setVisibility(TextView.VISIBLE);
         // TODO llenar mapa con proveedores
 
         MarkerOptions markerOpts;

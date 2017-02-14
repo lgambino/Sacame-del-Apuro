@@ -14,7 +14,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 
+import sacamedelapuro.arg.com.sacamedelapuro.mapa.MapaActivity;
 import sacamedelapuro.arg.com.sacamedelapuro.modelo.Usuario;
 
 public class MainActivity extends AppCompatActivity
@@ -22,6 +24,9 @@ public class MainActivity extends AppCompatActivity
 
     private final int CODIGO_LOGIN=1;
     public Usuario usuario;
+
+    private Button btnBuscarCercanos;
+    private Button btnListar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +44,24 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        btnBuscarCercanos = (Button) findViewById(R.id.btnBuscarPrestadoresCercanos);
+        btnBuscarCercanos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(MainActivity.this, BuscarCercanosActivity.class);
+                startActivity(i);
+            }
+        });
+
+        btnListar = (Button) findViewById(R.id.btnListarPrestadores);
+        btnListar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO: completar
+            }
+        });
+
+        // Eliminar
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

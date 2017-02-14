@@ -34,6 +34,9 @@
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"></activity>
+
+        <activity android:name=".BuscarCercanosActivity"/>
+
         <activity android:name=".mapa.MapaActivity" />
         <activity android:name=".mapa.DistanciaActivity"/>
         <receiver android:name=".mapa.BroadcastMapa" />

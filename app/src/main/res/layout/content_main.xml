@@ -13,8 +13,23 @@
     tools:context="sacamedelapuro.arg.com.sacamedelapuro.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <TextView
+    <Button
+        android:id="@+id/btnBuscarPrestadoresCercanos"
+        android:text="Prestadores\ncercanos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp" />
+    <Button
+        android:id="@+id/btnListarPrestadores"
+        android:text="Listar\nPrestadores"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="20dp" />
+
 </RelativeLayout>

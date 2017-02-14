@@ -29,7 +29,7 @@ public class DistanciaActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent returnIntent = new Intent();
-                if(txtKms.getText().toString().matches("") || txtKms.getText().toString().matches(".")){
+                if(txtKms.getText().toString().matches("") || "".equals(txtKms.getText().toString())){
                     setResult(MapaActivity.RESULT_CANCELED,returnIntent);
                     finish();
                 }
@@ -41,5 +41,6 @@ public class DistanciaActivity extends AppCompatActivity {
                 }
             }
         });
+        txtKms.requestFocus();
     }
 }
