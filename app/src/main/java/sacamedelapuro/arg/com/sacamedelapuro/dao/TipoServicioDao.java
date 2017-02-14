@@ -5,6 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.BaseColumns;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import sacamedelapuro.arg.com.sacamedelapuro.modelo.TipoServicio;
 
 /**
@@ -29,12 +32,61 @@ public class TipoServicioDao extends GenericDaoImpl<TipoServicio>{
         super.delete(TablaTipoServicio.TABLA, id);
     }
 
-    public Cursor get(Integer id) {
-        return super.get(TablaTipoServicio.TABLA, columnas, id);
+    public TipoServicio get(Integer id) {
+        Cursor cursor = super.get(TablaTipoServicio.TABLA, columnas, id);
+
+        TipoServicio tipoServicio = new TipoServicio();
+        if (cursor.moveToFirst()) {
+            do {
+                tipoServicio.setNombre(cursor.getString(0));
+
+            } while(cursor.moveToNext());
+        }
+
+        tipoServicio.setId(id);
+
+        return tipoServicio;
+    }
+
+    public TipoServicio get(String nombre){
+        super.leer();
+
+        Cursor cursor = bd.rawQuery("SELECT _ID FROM " + TablaTipoServicio.TABLA + " WHERE nombre="+ nombre, null);
+
+        TipoServicio tipoServicio = new TipoServicio();
+        if (cursor.moveToFirst()) {
+            do {
+                tipoServicio.setId(cursor.getInt(0));
+
+            } while(cursor.moveToNext());
+        }
+
+        tipoServicio.setNombre(nombre);
+
+        return tipoServicio;
     }
 
     public Cursor getAll() {
         return super.getAll(TablaTipoServicio.TABLA);
+    }
+
+    public List<TipoServicio> getAllPorNombre() {
+        leer();
+
+        Cursor cursor = bd.rawQuery("SELECT * FROM " + TablaTipoServicio.TABLA + " ORDER BY nombre ASC", null);
+
+        List<TipoServicio> tipos = new ArrayList<TipoServicio>();
+        if (cursor.moveToFirst()) {
+            do {
+                TipoServicio tipoServicio = new TipoServicio();
+                tipoServicio.setNombre(cursor.getString(0));
+
+                tipos.add(tipoServicio);
+
+            } while(cursor.moveToNext());
+        }
+
+        return tipos;
     }
 
     public void save(TipoServicio tipoServicio) {
