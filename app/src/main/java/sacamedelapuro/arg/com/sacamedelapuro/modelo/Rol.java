@@ -1,10 +1,14 @@
 package sacamedelapuro.arg.com.sacamedelapuro.modelo;
 
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
 /**
  * Created by lgambino on 08/02/2017.
  */
 
-public class Rol {
+public class Rol implements Serializable{
 
     private Integer id;
     private String nombre;

@@ -3,6 +3,7 @@ package sacamedelapuro.arg.com.sacamedelapuro;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -69,6 +70,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
     private UsuarioDao usuarioDao;
+    private Usuario usuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -202,7 +204,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if(cancel==false){
             // Check for a valid email address.
             if (TextUtils.isEmpty(email)) {
-                mEmailView.setError("Este campo es requerido.");
+                mEmailView.setError(getString(R.string.error_field_required));
                 focusView = mEmailView;
                 cancel = true;
             } else if (!isEmailValid(email)) {
@@ -218,6 +220,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         focusView = mPasswordView;
                         cancel = true;
                     }
+                    else{ // EXITOOOO --------- Sacar de aca el método
+                        usuario= usuarioDao.getUsuario(email);
+                    }
                 }
                 else { // quiso entrar pero el correo no existe
                     mEmailView.setError("Este email no se encuentra registrado.");
@@ -231,9 +236,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     focusView = mEmailView;
                     cancel = true;
                 }
-                else {
+                else { // EXITOOOO --------------- Sacar de aca el nuevoUsuario
                     // se registra el nuevo usuario
-                    nuevoUsuario(email, password);
+                    usuario=nuevoUsuario(email, password);
                 }
             }
 
@@ -241,12 +246,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 // There was an error; don't attempt login and focus the first
                 // form field with an error.
                 focusView.requestFocus();
-            } else {
+
+            } else { // EXITOOOOO -----------
                 // Show a progress spinner, and kick off a background task to
                 // perform the user login attempt.
                 showProgress(true);
-                mAuthTask = new UserLoginTask(email, password);
+                mAuthTask = new UserLoginTask(email, password, esNuevo);
                 mAuthTask.execute((Void) null);
+
+                // Tal vez borrar este, y dejar el del Async solamente
+                Intent retorno= new Intent();
+                retorno.putExtra("usuario", usuario);
+                setResult(MainActivity.RESULT_OK, retorno);
             }
         }
 
@@ -254,7 +265,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
+        //TODO: Mejorar la validacion
         return email.contains("@");
     }
 
@@ -269,11 +280,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
+        //TODO: Mejorar la validacion
         return password.length() > 4;
     }
 
-    private void nuevoUsuario(String username, String pass){
+    private Usuario nuevoUsuario(String username, String pass){
         usuarioDao = new UsuarioDao(this);
         Usuario usuario = new Usuario();
         usuario.setUsername(username);
@@ -290,6 +301,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         usuario.setUbicacion(new Ubicacion());
 
         usuarioDao.save(usuario);
+        return usuario;
     }
 
     /**
@@ -390,32 +402,34 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
+        private final Boolean esNuevo;
 
-        UserLoginTask(String email, String password) {
+        UserLoginTask(String email, String password, Boolean esNuev) {
             mEmail = email;
             mPassword = password;
+            esNuevo = esNuev;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
 
+            // Autenticación
             try {
                 // Simulate network access.
-                Thread.sleep(2000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 return false;
             }
-
+/*
             for (String credential : DUMMY_CREDENTIALS) {
                 String[] pieces = credential.split(":");
                 if (pieces[0].equals(mEmail)) {
                     // Account exists, return true if the password matches.
                     return pieces[1].equals(mPassword);
                 }
-            }
+            }*/
 
-            // TODO: register the new account here.
+            // TODO: Acá se debería registrar la nueva cuenta!
             return true;
         }
 
@@ -425,6 +439,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
+                Intent retorno= new Intent();
+                retorno.putExtra("usuario", usuario);
+                setResult(MainActivity.RESULT_OK, retorno);
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

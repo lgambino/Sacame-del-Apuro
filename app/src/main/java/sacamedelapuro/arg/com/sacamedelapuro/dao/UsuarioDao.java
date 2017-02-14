@@ -14,9 +14,6 @@ import sacamedelapuro.arg.com.sacamedelapuro.modelo.Servicio;
 import sacamedelapuro.arg.com.sacamedelapuro.modelo.Ubicacion;
 import sacamedelapuro.arg.com.sacamedelapuro.modelo.Usuario;
 
-/**
- * Created by lgambino on 08/02/2017.
- */
 
 public class UsuarioDao extends GenericDaoImpl<Usuario> {
 
@@ -98,7 +95,7 @@ public class UsuarioDao extends GenericDaoImpl<Usuario> {
         boolean existe = true;
 
         Usuario usuario = getUsuario(username);
-        if(usuario.getUsername().isEmpty()) existe = false;
+        if(usuario.getUsername()==null) existe = false;
 
         return existe;
     }

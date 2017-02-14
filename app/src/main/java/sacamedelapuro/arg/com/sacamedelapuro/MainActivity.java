@@ -1,5 +1,6 @@
 package sacamedelapuro.arg.com.sacamedelapuro;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,20 +15,25 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import sacamedelapuro.arg.com.sacamedelapuro.modelo.Usuario;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private final int CODIGO_LOGIN=1;
+    public Usuario usuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
-
         Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent,CODIGO_LOGIN);
 
+    }
 
+    // Metodo creado para cuando el login es exitoso
+    protected void continuacionOnCreate(){
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -50,6 +56,21 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        switch (requestCode) {
+            case CODIGO_LOGIN:
+                // Resultado
+                if (resultCode == Activity.RESULT_OK) {
+                    usuario=(Usuario) data.getExtras().get("usuario");
+                    continuacionOnCreate();
+                }
+                else finish();
+                break;
+        }
     }
 
     @Override

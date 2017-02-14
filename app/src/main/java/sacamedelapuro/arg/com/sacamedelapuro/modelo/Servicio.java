@@ -1,10 +1,12 @@
 package sacamedelapuro.arg.com.sacamedelapuro.modelo;
 
+import java.io.Serializable;
+
 /**
  * Created by lgambino on 08/02/2017.
  */
 
-public class Servicio {
+public class Servicio implements Serializable{
 
 
     private Integer id;

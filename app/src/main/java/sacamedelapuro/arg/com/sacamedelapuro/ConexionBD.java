@@ -1,8 +1,5 @@
 package sacamedelapuro.arg.com.sacamedelapuro;
 
-/**
- * Created by lgambino on 08/02/2017.
- */
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
