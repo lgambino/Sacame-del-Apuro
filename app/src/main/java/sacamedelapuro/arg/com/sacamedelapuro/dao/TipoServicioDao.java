@@ -78,8 +78,7 @@ public class TipoServicioDao extends GenericDaoImpl<TipoServicio>{
         List<TipoServicio> tipos = new ArrayList<TipoServicio>();
         if (cursor.moveToFirst()) {
             do {
-                TipoServicio tipoServicio = new TipoServicio();
-                tipoServicio.setNombre(cursor.getString(0));
+                TipoServicio tipoServicio = new TipoServicio(cursor.getInt(0),cursor.getString(1));
 
                 tipos.add(tipoServicio);
 

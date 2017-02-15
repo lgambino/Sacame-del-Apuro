@@ -43,6 +43,8 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
     private final int CODIGO_RESULTADO_DISTANCIA =4;
     private LatLng posic;
     private int origen;
+    private int idServicio;
+
 
     // Dentro de la app, o proveniente del broadcast
     private final int CODIGO_ORIGEN_BUSCAR=1;
@@ -57,6 +59,8 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_mapa);
 
         v =  (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        idServicio= (int) getIntent().getExtras().get("servicio_id");
 
         //distancia= Float.valueOf(getIntent().getExtras().get("distancia_inicial").toString());
 
