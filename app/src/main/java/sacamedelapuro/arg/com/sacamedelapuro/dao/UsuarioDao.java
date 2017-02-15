@@ -13,6 +13,7 @@ import sacamedelapuro.arg.com.sacamedelapuro.modelo.Rol;
 import sacamedelapuro.arg.com.sacamedelapuro.modelo.Servicio;
 import sacamedelapuro.arg.com.sacamedelapuro.modelo.Ubicacion;
 import sacamedelapuro.arg.com.sacamedelapuro.modelo.Usuario;
+import sacamedelapuro.arg.com.sacamedelapuro.util.General;
 
 /**
  * Created by lgambino on 08/02/2017.
@@ -112,7 +113,6 @@ public class UsuarioDao extends GenericDaoImpl<Usuario> {
 
         Cursor cursor = bd.rawQuery("SELECT * FROM " + TablaUsuario.TABLA + " WHERE id_rol="+ idRol, null);
 
-
         List<Usuario> usuarios = new ArrayList<Usuario>();
         if (cursor.moveToFirst()) {
             do {
@@ -142,6 +142,46 @@ public class UsuarioDao extends GenericDaoImpl<Usuario> {
 
     public List<Usuario> getPrestadores(){
         return getAllPorRol(2); // código de prestadores
+    }
+
+    public List<General> getUsuariosServicios(Integer idTipoServicio){
+        leer();
+
+        Cursor cursor = bd.rawQuery("SELECT us._id, us.nombre, us.celular, s._id, s.nombre, s.descripcion, s.observaciones, s.precio, ub.latitud, ub.longitud, ub.direccion " +
+                                    "FROM usuario as us, servicio as s, ubicacion as ub " +
+                                    "WHERE us.id_rol=2 AND s.id_tipo=" + idTipoServicio + " AND us.id_servicio=s._id " +
+                                    "AND ub._id=us.id_ubicacion", null);
+
+        List<General> listado = new ArrayList<General>();
+        if (cursor.moveToFirst()) {
+            do {
+                Usuario usuario = new Usuario();
+                Servicio servicio = new Servicio();
+                Ubicacion ubicacion = new Ubicacion();
+
+                usuario.setId(cursor.getInt(0));
+                usuario.setNombre(cursor.getString(1));
+                usuario.setCelular(cursor.getString(2));
+                servicio.setId(cursor.getInt(3));
+                servicio.setNombre(cursor.getString(4));
+                servicio.setDescripcion(cursor.getString(5));
+                servicio.setObservaciones(cursor.getString(6));
+                servicio.setPrecio(cursor.getInt(7));
+                ubicacion.setLatitud(cursor.getString(8));
+                ubicacion.setLongitud(cursor.getString(9));
+                ubicacion.setDireccion(cursor.getString(10));
+
+                General general = new General();
+                general.setUsuario(usuario);
+                general.setServicio(servicio);
+                general.setUbicacion(ubicacion);
+
+                listado.add(general);
+
+            } while(cursor.moveToNext());
+        }
+
+        return listado;
     }
 
     public void save(Usuario usuario) {
