@@ -127,7 +127,7 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void generarNuevosProveedores(float dist){
         // Obtener la distancia del extra
         LatLng posicion= getPosicion();
-        new generarProveedoresAsync(miMapa, txtDistancia, dist, posicion).execute();
+        new generarProveedoresAsync(this, miMapa, txtDistancia, dist, posicion, idServicio).execute();
     }
 
     private LatLng getPosicion(){

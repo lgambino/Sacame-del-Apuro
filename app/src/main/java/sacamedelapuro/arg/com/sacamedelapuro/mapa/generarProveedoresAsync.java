@@ -1,6 +1,7 @@
 package sacamedelapuro.arg.com.sacamedelapuro.mapa;
 
 
+import android.content.Context;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.widget.TextView;
@@ -10,23 +11,35 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class generarProveedoresAsync extends AsyncTask<Object[] , Integer, ArrayList<LatLng> >{
+import sacamedelapuro.arg.com.sacamedelapuro.dao.TipoServicioDao;
+import sacamedelapuro.arg.com.sacamedelapuro.dao.UsuarioDao;
+import sacamedelapuro.arg.com.sacamedelapuro.modelo.Servicio;
+import sacamedelapuro.arg.com.sacamedelapuro.modelo.TipoServicio;
+import sacamedelapuro.arg.com.sacamedelapuro.modelo.Usuario;
+import sacamedelapuro.arg.com.sacamedelapuro.util.General;
+
+public class generarProveedoresAsync extends AsyncTask<Object[] , Integer, ArrayList<General> >{
 
     private GoogleMap miMapa;
     private TextView txtDistancia;
     private LatLng posicion;
     private float distancia;
+    private int tipo;
+    Context context;
 
-    public generarProveedoresAsync(GoogleMap mapa, TextView txtDist, Float dist, LatLng pos){
+    public generarProveedoresAsync(Context contexto, GoogleMap mapa, TextView txtDist, Float dist, LatLng pos, int t){
         miMapa=mapa; // Se debe limpiar
         txtDistancia=txtDist; // Cambiar con la nueva distancia
         posicion=pos; // Usado para calcular los proveedores cercanos
         distancia=dist;
+        tipo=t;
+        context=contexto;
     }
 
     @Override
-    protected ArrayList<LatLng> doInBackground(Object[]... params) {
+    protected ArrayList<General> doInBackground(Object[]... params) {
         // Funcion lista
         return obtenerProveedoresCercanos(distancia,posicion);
     }
@@ -36,47 +49,61 @@ public class generarProveedoresAsync extends AsyncTask<Object[] , Integer, Array
         miMapa.clear();
     }
 
-    protected void onPostExecute(ArrayList<LatLng> result) {
+    protected void onPostExecute(ArrayList<General> result) {
         txtDistancia.setText(" Dist. actual(kms): "+distancia+" ");
         txtDistancia.setVisibility(TextView.VISIBLE);
-        // TODO llenar mapa con proveedores
 
+        // llenar mapa con proveedores
+        General aux;
         MarkerOptions markerOpts;
         for(int i = 0; result.size() > i; i++){
+            aux=result.get(i);
             // Se definen las opciones para los marcadores
             markerOpts = new MarkerOptions();
-            markerOpts.position(new LatLng(result.get(i).latitude, result.get(i).longitude));
-            if(result.get(i).latitude==-31.6165){ // BORRAAAAAARRRR
-                markerOpts.title(new StringBuilder().append("Emergencias náuticas").toString());
-            }
-            else {
-                markerOpts.title(new StringBuilder().append("Proveedor de prueba ").append(i).toString());
-            }
-            markerOpts.snippet("tel:3454430409");
+            markerOpts.position(new LatLng(Double.valueOf(aux.getUbicacion().getLatitud()),
+                    Double.valueOf(aux.getUbicacion().getLongitud())));
+            markerOpts.title(aux.getUsuario().getNombre());
+            markerOpts.snippet("tel:"+aux.getUsuario().getCelular());
             miMapa.addMarker(markerOpts);
         }
     }
 
 
-    private ArrayList<LatLng> obtenerProveedoresCercanos(float kms, LatLng pos){
-        ArrayList<LatLng> retorno= new ArrayList<>();
+    private ArrayList<General> obtenerProveedoresCercanos(float kms, LatLng pos){
+        ArrayList<General> retorno= new ArrayList<>();
         Double lat=pos.latitude;
         Double lng=pos.longitude;
-        LatLng aux;
+        General aux;
         float[] result={0,0,0};
-        ArrayList<LatLng> proveedores= buscarProveedores(); // TODO modificar
+        ArrayList<General> proveedores= buscarProveedores(); // TODO modificar
         for(int i=0; i<proveedores.size(); i++){
             aux=proveedores.get(i);
-            Location.distanceBetween(lat,lng,aux.latitude,aux.longitude,result);
+            Location.distanceBetween(lat,lng,Double.valueOf(aux.getUbicacion().getLatitud()),
+                    Double.valueOf(aux.getUbicacion().getLongitud()),result);
             if(result[0]<kms*1000)
                 retorno.add(aux);
         }
         return retorno;
     }
 
-    private ArrayList<LatLng> buscarProveedores(){
-        ArrayList<LatLng> retorno = new ArrayList<>(); // TODO Buscar de base de datos
+    private ArrayList<General> buscarProveedores(){
+        List<General> retorno= new ArrayList<>();
+        if (tipo==-1){
+            List<TipoServicio> servicios = new TipoServicioDao(context).getAllPorNombre();
+            List<General> aux= new ArrayList<>();
+            for(int i=0; i<servicios.size(); i++){
+                aux=new UsuarioDao(context).getUsuariosServicios(servicios.get(i).getId());
+                retorno.addAll(aux);
+            }
+        }
+        else{
+            retorno= new UsuarioDao(context).getUsuariosServicios(tipo);
+        }
+        return new ArrayList<General> (retorno);
+    }
 
+    private ArrayList<LatLng> buscarProveedoresTest(){
+        ArrayList<LatLng> retorno = new ArrayList<>();
         retorno.add(new LatLng(-31.63,-60.7));
         retorno.add(new LatLng(-31.6426,-60.7068));
         retorno.add(new LatLng(-31.6424,-60.688));
