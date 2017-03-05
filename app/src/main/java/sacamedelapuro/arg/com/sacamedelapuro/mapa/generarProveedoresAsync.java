@@ -10,6 +10,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class generarProveedoresAsync extends AsyncTask<Object[] , Integer, Array
     @Override
     protected ArrayList<General> doInBackground(Object[]... params) {
         // Funcion lista
-        return obtenerProveedoresCercanos(distancia,posicion);
+        return obtenerProveedoresCercanos(distancia, posicion);
     }
 
     protected void onPreExecute(){
@@ -50,7 +51,13 @@ public class generarProveedoresAsync extends AsyncTask<Object[] , Integer, Array
     }
 
     protected void onPostExecute(ArrayList<General> result) {
-        txtDistancia.setText(" Dist. actual(kms): "+distancia+" ");
+
+        // Para el formato de distancia
+        NumberFormat formatter = NumberFormat.getNumberInstance();
+        formatter.setMaximumFractionDigits(2);
+        String distString = formatter.format(distancia);
+
+        txtDistancia.setText(" Dist. actual: "+distString+" kms");
         txtDistancia.setVisibility(TextView.VISIBLE);
 
         // llenar mapa con proveedores

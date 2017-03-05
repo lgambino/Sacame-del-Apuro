@@ -165,7 +165,7 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
         //If you only need one location, unregister the listener
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 
-        generarNuevosProveedores2(5,latLng);
+        generarNuevosProveedores2(3,latLng);
     }
 
     @Override
