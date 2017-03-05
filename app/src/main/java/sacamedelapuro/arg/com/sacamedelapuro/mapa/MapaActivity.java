@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import com.google.android.gms.location.LocationListener;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,37 +19,45 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
 import sacamedelapuro.arg.com.sacamedelapuro.R;
 
 public class MapaActivity extends AppCompatActivity implements OnMapReadyCallback,
-            GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowLongClickListener,
-        ActivityCompat.OnRequestPermissionsResultCallback{
+        GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowLongClickListener,
+        ActivityCompat.OnRequestPermissionsResultCallback, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private GoogleMap miMapa;
     private Button btnDistancia;
     private TextView txtDistancia;
     private float distancia;
-    private final int CODIGO_RESULTADO_0=0;
-    private final int CODIGO_PEDIDO_PERMISOS=3;
-    private final int CODIGO_RESULTADO_DISTANCIA =4;
+    private final int CODIGO_RESULTADO_0 = 0;
+    private final int CODIGO_PEDIDO_PERMISOS = 3;
+    private final int CODIGO_RESULTADO_DISTANCIA = 4;
     private LatLng posic;
     private int origen;
     private int idServicio;
+    private LatLng latLng;
 
+    private LocationRequest mLocationRequest;
+    private GoogleApiClient mGoogleApiClient;
 
     // Dentro de la app, o proveniente del broadcast
-    private final int CODIGO_ORIGEN_BUSCAR=1;
-    private final int CODIGO_ORIGEN_BROADCAST=2;
+    private final int CODIGO_ORIGEN_BUSCAR = 1;
+    private final int CODIGO_ORIGEN_BROADCAST = 2;
 
     private ArrayList<LatLng> proveedores;
     Vibrator v;
@@ -58,27 +67,27 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapa);
 
-        v =  (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
-        idServicio= (int) getIntent().getExtras().get("servicio_id");
+        idServicio = (int) getIntent().getExtras().get("servicio_id");
 
         //distancia= Float.valueOf(getIntent().getExtras().get("distancia_inicial").toString());
 
-        origen=(int)getIntent().getExtras().get("origen");
-        if (origen== CODIGO_ORIGEN_BUSCAR){
-                posic=(LatLng) getIntent().getExtras().get("posicion");
+        origen = (int) getIntent().getExtras().get("origen");
+        if (origen == CODIGO_ORIGEN_BUSCAR) {
+            posic = (LatLng) getIntent().getExtras().get("posicion");
         }
 
-        txtDistancia= (TextView) findViewById(R.id.txtDistancia);
+        txtDistancia = (TextView) findViewById(R.id.txtDistancia);
 
-        btnDistancia= (Button) findViewById(R.id.btnDistancia);
+        btnDistancia = (Button) findViewById(R.id.btnDistancia);
         btnDistancia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MapaActivity.this, DistanciaActivity.class);
                 startActivityForResult(i, CODIGO_RESULTADO_DISTANCIA);
             }
-            });
+        });
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -88,11 +97,11 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         miMapa = googleMap;
-        miMapa.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(-31.6,-60.7) , 5) );
+        miMapa.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-31.6, -60.7), 6));
 
         miMapa.setOnInfoWindowLongClickListener(this);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -105,8 +114,58 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         miMapa.setMyLocationEnabled(true);
 
-        // Distancia inicial
-        //generarNuevosProveedores(distancia);
+        // Nuevo
+        buildGoogleApiClient();
+        mGoogleApiClient.connect();
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+        // Innecesario
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(500); //5 seconds
+        mLocationRequest.setFastestInterval(300); //3 seconds
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        //mLocationRequest.setSmallestDisplacement(0.1F); //1/10 meter
+
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+        latLng= new LatLng(location.getLatitude(), location.getLongitude());
+
+        // Zoom a la posición actual
+        CameraUpdate cam = CameraUpdateFactory.newLatLngZoom(latLng, (float)13.8);
+        miMapa.animateCamera(cam);
+
+        //If you only need one location, unregister the listener
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+
+        generarNuevosProveedores2(5,latLng);
     }
 
     @Override
@@ -128,6 +187,9 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Obtener la distancia del extra
         LatLng posicion= getPosicion();
         new generarProveedoresAsync(this, miMapa, txtDistancia, dist, posicion, idServicio).execute();
+    }
+    private void generarNuevosProveedores2(float dist, LatLng pos){
+        new generarProveedoresAsync(this, miMapa, txtDistancia, dist, pos, idServicio).execute();
     }
 
     private LatLng getPosicion(){
