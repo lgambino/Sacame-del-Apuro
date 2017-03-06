@@ -72,21 +72,27 @@ public class UsuarioDao extends GenericDaoImpl<Usuario> {
     public Usuario getUsuario(String username){
         super.leer();
 
-        Cursor cursor = bd.query(TablaUsuario.TABLA, columnas, "username='" + username + "'", null, null, null, null);
+        String idArray[] = {"_ID"};
+        String columnasAux[] = new String[columnas.length+1];
+        System.arraycopy(idArray, 0, columnasAux, 0, 1);
+        System.arraycopy(columnas, 0, columnasAux, 1, columnas.length);
+
+        Cursor cursor = bd.query(TablaUsuario.TABLA, columnasAux, "username='" + username + "'", null, null, null, null);
 
         Usuario usuario = new Usuario();
         if (cursor.moveToFirst()) {
             do {
-                usuario.setUsername(cursor.getString(0));
-                usuario.setPass(cursor.getString(1));
-                usuario.setNombre(cursor.getString(2));
-                usuario.setCelular(cursor.getString(3));
-                usuario.setDni(cursor.getString(4));
-                usuario.setImagen(cursor.getString(5));
-                usuario.setRol(new Rol(cursor.getInt(6)));
+                usuario.setId(cursor.getInt(0));
+                usuario.setUsername(cursor.getString(1));
+                usuario.setPass(cursor.getString(2));
+                usuario.setNombre(cursor.getString(3));
+                usuario.setCelular(cursor.getString(4));
+                usuario.setDni(cursor.getString(5));
+                usuario.setImagen(cursor.getString(6));
+                usuario.setRol(new Rol(cursor.getInt(7)));
 
-                if(cursor.getString(7)!=null) usuario.setServicio(new Servicio(cursor.getInt(7)));
-                if(cursor.getString(8)!=null) usuario.setUbicacion(new Ubicacion(cursor.getInt(8)));
+                if(cursor.getString(8)!=null) usuario.setServicio(new Servicio(cursor.getInt(7)));
+                if(cursor.getString(9)!=null) usuario.setUbicacion(new Ubicacion(cursor.getInt(8)));
 
             } while(cursor.moveToNext());
         }
@@ -216,15 +222,29 @@ public class UsuarioDao extends GenericDaoImpl<Usuario> {
 
     private ContentValues valoresAll(Usuario usuario){
         ContentValues valores = new ContentValues();
+
+        if(usuario.getId()!=null){
+            valores.put(TablaUsuario._ID, usuario.getId());
+        }
+
         valores.put(TablaUsuario.COLUMNA_USERNAME, usuario.getUsername());
         valores.put(TablaUsuario.COLUMNA_PASS, usuario.getPass());
         valores.put(TablaUsuario.COLUMNA_NOMBRE, usuario.getNombre());
         valores.put(TablaUsuario.COLUMNA_CELULAR, usuario.getCelular());
         valores.put(TablaUsuario.COLUMNA_DNI, usuario.getDni());
-        valores.put(TablaUsuario.COLUMNA_IMAGEN, usuario.getImagen());
+
+        if(usuario.getImagen()!=null && usuario.getImagen().length()>0){
+            valores.put(TablaUsuario.COLUMNA_IMAGEN, usuario.getImagen());
+        }
         valores.put(TablaUsuario.COLUMNA_ID_ROL, usuario.getRol().getId());
-        valores.put(TablaUsuario.COLUMNA_ID_SERVICIO, usuario.getServicio().getId());
-        valores.put(TablaUsuario.COLUMNA_ID_UBICACION, usuario.getUbicacion().getId());
+
+        if(usuario.getServicio()!=null){
+            valores.put(TablaUsuario.COLUMNA_ID_SERVICIO, usuario.getServicio().getId());
+        }
+
+        if(usuario.getUbicacion()!=null){
+            valores.put(TablaUsuario.COLUMNA_ID_UBICACION, usuario.getUbicacion().getId());
+        }
 
         return valores;
     }

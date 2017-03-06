@@ -3,6 +3,7 @@ package sacamedelapuro.arg.com.sacamedelapuro;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -19,6 +20,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -115,12 +117,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         // *** sólo activar para borrar la BD ***
 
-        ConexionBD conexionBD = new ConexionBD(this);
+       /* ConexionBD conexionBD = new ConexionBD(this);
         try {
             conexionBD.deleteBD();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     private void populateAutoComplete() {
@@ -283,16 +285,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private void nuevoUsuario(String username, String pass){
         usuarioDao = new UsuarioDao(this);
         Usuario usuario = new Usuario();
+
+        TelephonyManager telManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+
         usuario.setUsername(username);
         usuario.setPass(pass);
-        usuario.setNombre("Completar Nombre");
-        usuario.setCelular("1234");
+        usuario.setNombre("Nombre o Empresa");
+        usuario.setCelular(telManager.getLine1Number());
         usuario.setDni("00000000");
 
-        Rol rolAux = new Rol();
-        rolAux.setId(1);
-
-        usuario.setRol(rolAux);
+        usuario.setRol(new Rol(1));
         usuario.setServicio(new Servicio());
         usuario.setUbicacion(new Ubicacion());
 
