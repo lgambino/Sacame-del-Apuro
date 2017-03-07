@@ -57,14 +57,16 @@ public class generarProveedoresAsync extends AsyncTask<Object[] , Integer, Array
         formatter.setMaximumFractionDigits(2);
         String distString = formatter.format(distancia);
 
+        // Se muestra la distancia seleccionada
         txtDistancia.setText(" Dist. actual: "+distString+" kms");
         txtDistancia.setVisibility(TextView.VISIBLE);
 
-        // llenar mapa con proveedores
-        General aux;
+        // Mal, se pasan al mapa los prestadores
+        MapaActivity.setPrestadores(result);
+
+        // Llenado del mapa con prestadores
         MarkerOptions markerOpts;
-        for(int i = 0; result.size() > i; i++){
-            aux=result.get(i);
+        for(General aux: result){
             // Se definen las opciones para los marcadores
             markerOpts = new MarkerOptions();
             markerOpts.position(new LatLng(Double.valueOf(aux.getUbicacion().getLatitud()),

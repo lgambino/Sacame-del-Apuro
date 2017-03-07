@@ -45,6 +45,8 @@
 
         <activity android:name=".mapa.MapaActivity" />
         <activity android:name=".mapa.DistanciaActivity"/>
+        <activity android:name=".mapa.PerfilMapaActivity"/>
+        <receiver android:name=".util.ConfirmacionReceiver"/>
 
         <receiver android:name=".mapa.BroadcastMapa"
             android:enabled="true"

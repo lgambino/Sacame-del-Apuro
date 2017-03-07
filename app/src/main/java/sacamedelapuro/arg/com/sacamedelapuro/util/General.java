@@ -1,5 +1,7 @@
 package sacamedelapuro.arg.com.sacamedelapuro.util;
 
+import java.io.Serializable;
+
 import sacamedelapuro.arg.com.sacamedelapuro.modelo.Servicio;
 import sacamedelapuro.arg.com.sacamedelapuro.modelo.TipoServicio;
 import sacamedelapuro.arg.com.sacamedelapuro.modelo.Ubicacion;
@@ -9,7 +11,7 @@ import sacamedelapuro.arg.com.sacamedelapuro.modelo.Usuario;
  * Created by Luciano on 14/02/2017.
  */
 
-public class General {
+public class General implements Serializable {
 
     private Usuario usuario;
     private Servicio servicio;

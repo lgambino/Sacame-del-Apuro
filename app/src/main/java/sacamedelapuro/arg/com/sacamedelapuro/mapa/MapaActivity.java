@@ -33,7 +33,10 @@ import com.google.android.gms.maps.model.Marker;
 
 import java.util.ArrayList;
 
+import sacamedelapuro.arg.com.sacamedelapuro.MainActivity;
 import sacamedelapuro.arg.com.sacamedelapuro.R;
+import sacamedelapuro.arg.com.sacamedelapuro.util.AlarmaTestNotificacion;
+import sacamedelapuro.arg.com.sacamedelapuro.util.General;
 
 public class MapaActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowLongClickListener,
@@ -47,10 +50,12 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
     private final int CODIGO_RESULTADO_0 = 0;
     private final int CODIGO_PEDIDO_PERMISOS = 3;
     private final int CODIGO_RESULTADO_DISTANCIA = 4;
+    private final int CODIGO_RESULTADO_PRESTADOR = 5;
     private LatLng posic;
     private int origen;
     private int idServicio;
     private LatLng latLng;
+    private static ArrayList<General> prestadores;
 
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
@@ -70,8 +75,6 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         idServicio = (int) getIntent().getExtras().get("servicio_id");
-
-        //distancia= Float.valueOf(getIntent().getExtras().get("distancia_inicial").toString());
 
         origen = (int) getIntent().getExtras().get("origen");
         if (origen == CODIGO_ORIGEN_BUSCAR) {
@@ -180,6 +183,12 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
                     generarNuevosProveedores(dist);
                 }
                 break;
+            case CODIGO_RESULTADO_PRESTADOR:
+                if (resultCode == Activity.RESULT_OK) {
+                    General prest= (General) data.getExtras().get("prestador");
+                    new AlarmaTestNotificacion(MapaActivity.this, prest);
+                }
+                break;
         }
     }
 
@@ -229,10 +238,11 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onInfoWindowLongClick(Marker marker) {
         v.vibrate(50);
-        // Mostrar informacion o contactar al proveedor (intent de llamada puede ser)
-        Intent intent = new Intent(Intent.ACTION_DIAL);
-        intent.setData(Uri.parse(marker.getSnippet()));
-        startActivity(intent);
+        // TODO: completar con informacion para la pantalla de perfil (dar el prestador correspondiente)
+        Intent i = new Intent(MapaActivity.this, PerfilMapaActivity.class);
+        i.putExtra("prestador", prestadores.get(0)); // Dar el correcto
+        //intent.setData(Uri.parse(marker.getSnippet()));
+        startActivityForResult(i, CODIGO_RESULTADO_PRESTADOR);
     }
 
     @Override
@@ -253,5 +263,8 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         }
+    }
+    public static void setPrestadores(ArrayList<General> prest){
+        prestadores=prest;
     }
 }
