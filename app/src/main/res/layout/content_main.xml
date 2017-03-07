@@ -13,27 +13,60 @@
     tools:context="sacamedelapuro.arg.com.sacamedelapuro.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <Button
-        android:id="@+id/btnBuscarPrestadoresCercanos"
-        android:text="Prestadores\ncercanos"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="20dp"
-        android:width="135dp"
-        android:height="80dp"/>
-    <Button
-        android:id="@+id/btnListarPrestadores"
-        android:text="Listar\nPrestadores"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="20dp"
-        android:width="135dp"
-        android:height="80dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="1">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            app:srcCompat="@android:drawable/ic_menu_gallery"
+            android:id="@+id/img_perfil" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="15dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_username"
+            android:textSize="18sp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:id="@+id/txt_nombre"
+            android:hint="Nombre o Empresa"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_celular"
+            android:textSize="18sp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:id="@+id/txt_dni"
+            android:hint="DNI"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>

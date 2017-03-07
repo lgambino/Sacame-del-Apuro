@@ -2,30 +2,56 @@ package sacamedelapuro.arg.com.sacamedelapuro;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import sacamedelapuro.arg.com.sacamedelapuro.dao.UsuarioDao;
 import sacamedelapuro.arg.com.sacamedelapuro.modelo.Usuario;
+
+import static android.os.Environment.getExternalStoragePublicDirectory;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private final int CODIGO_LOGIN=1;
-    public Usuario usuario;
+    private static final int REQUEST_IMAGE_CAPTURE = 2;
 
-    private Button btnBuscarCercanos;
-    private Button btnListar;
+    public Usuario usuario;
+    private UsuarioDao usuarioDao;
+
+    private TextView TextUsername;
+    private EditText TextNombre;
+    private TextView TextCelular;
+    private EditText TextDni;
+    private ImageView ImgPerfil;
+
+    private Bitmap imageBitmap;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,22 +89,25 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        btnBuscarCercanos = (Button) findViewById(R.id.btnBuscarPrestadoresCercanos);
-        btnBuscarCercanos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, BuscarCercanosActivity.class);
-                startActivity(i);
-            }
-        });
+        TextUsername = (TextView) findViewById(R.id.txt_username);
+        TextNombre = (EditText) findViewById(R.id.txt_nombre);
+        TextCelular = (TextView) findViewById(R.id.txt_celular);
+        TextDni = (EditText) findViewById(R.id.txt_dni);
+        ImgPerfil = (ImageView) findViewById(R.id.img_perfil);
 
-        btnListar = (Button) findViewById(R.id.btnListarPrestadores);
-        btnListar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO: completar
-            }
-        });
+        TextUsername.setText(usuario.getUsername());
+        if(usuario.getNombre()==null || usuario.getNombre().length()<1) TextNombre.setText("");
+        else TextNombre.setText(usuario.getNombre());
+        TextCelular.setText(usuario.getCelular());
+        if(usuario.getDni()==null || usuario.getDni().length()<1) TextDni.setText("");
+        else TextDni.setText(usuario.getDni());
+        if(usuario.getImagen()!=null && usuario.getImagen().length()>0) {
+            imageBitmap = BitmapFactory.decodeFile(usuario.getImagen());
+
+            //Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(usuario.getImagen()), 25, 25);
+
+            ImgPerfil.setImageBitmap(imageBitmap);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -93,15 +122,24 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if(requestCode==CODIGO_LOGIN) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            /*Bundle extras = data.getExtras();
+            imageBitmap = (Bitmap) extras.get("data");*/
+            imageBitmap = BitmapFactory.decodeFile(usuario.getImagen());
+
+            ImgPerfil.setImageBitmap(imageBitmap);
+            usuarioDao = new UsuarioDao(this);
+            usuarioDao.update(usuario);
+        }
+        else if(requestCode==CODIGO_LOGIN) {
             // Resultado
             if (resultCode == Activity.RESULT_OK) {
                 usuario = (Usuario) data.getExtras().get("usuario");
                 continuacionOnCreate();
             } else finish();
         }
-        else finish();
 
+        else finish();
     }
 
     @Override
@@ -136,6 +174,59 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        String mCurrentPhotoPath = image.getAbsolutePath();
+
+        /*Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(mCurrentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);*/
+
+        return image;
+    }
+
+
+
+    private void dispatchTakePictureIntent(){
+
+        String ruta_fotos = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/perfil/";
+        File file = new File(ruta_fotos);
+        file.mkdirs();
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String ruta_foto = ruta_fotos + timeStamp + ".jpg";
+        File foto = new File(ruta_foto);
+
+        try {
+            foto.createNewFile();
+        } catch (IOException ex) {
+            Log.e("ERROR ", "Error:" + ex);
+        }
+
+        Uri uri = Uri.fromFile(foto);
+
+        usuario.setImagen(ruta_foto);
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -144,13 +235,12 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_camera) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+            dispatchTakePictureIntent();
 
-        } else if (id == R.id.nav_slideshow) {
-
+        } else if (id == R.id.btnBuscarPrestadoresCercanos) {
+            Intent i = new Intent(MainActivity.this, BuscarCercanosActivity.class);
+            startActivity(i);
         } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
 
