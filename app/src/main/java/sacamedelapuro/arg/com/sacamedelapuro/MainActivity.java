@@ -19,9 +19,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,7 +64,6 @@ public class MainActivity extends AppCompatActivity
         startActivityForResult(intent,CODIGO_LOGIN);
 
     }
-
 
     // Prueba - NO USADO
     protected void intentEjemplo(){
@@ -109,6 +111,13 @@ public class MainActivity extends AppCompatActivity
             ImgPerfil.setImageBitmap(imageBitmap);
         }
 
+        final Button button = (Button) findViewById(R.id.button_actualizar);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                actualizarDatos();
+            }
+        });
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -117,6 +126,21 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void actualizarDatos(){
+        TextNombre = (EditText) findViewById(R.id.txt_nombre);
+        TextDni = (EditText) findViewById(R.id.txt_dni);
+
+        usuario.setNombre(TextNombre.getText().toString());
+        usuario.setDni(TextDni.getText().toString());
+
+        usuarioDao = new UsuarioDao(this);
+        usuarioDao.update(usuario);
+
+        Toast.makeText(this, "Datos actualizados.", Toast.LENGTH_SHORT).show();
+
+        continuacionOnCreate();
     }
 
     @Override

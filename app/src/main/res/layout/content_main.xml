@@ -61,10 +61,16 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
+            android:inputType="number"
             android:id="@+id/txt_dni"
             android:hint="DNI"
             android:textSize="18sp" />
+
+        <Button
+            android:text="Actualizar Datos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_actualizar" />
 
     </LinearLayout>
     </ScrollView>

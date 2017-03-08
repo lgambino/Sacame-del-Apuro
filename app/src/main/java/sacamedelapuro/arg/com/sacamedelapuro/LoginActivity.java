@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -123,6 +124,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         } catch (IOException e) {
             e.printStackTrace();
         }*/
+
+        SharedPreferences sp = this.getSharedPreferences("Login", 0);
+
+        String user = sp.getString("user", null);
+        String pass = sp.getString("pass", null);
+
+        if(user!=null && user.length()>0){
+            mEmailView.setText(user);
+            mPasswordView.setText(pass);
+        }
     }
 
     private void populateAutoComplete() {
@@ -253,6 +264,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 usuarioDao = new UsuarioDao(this);
                 usuario = usuarioDao.getUsuario(email);
 
+                SharedPreferences sp = getSharedPreferences("Login", 0);
+                SharedPreferences.Editor spEditor = sp.edit();
+                spEditor.putString("user",usuario.getUsername() );
+                spEditor.putString("pass",usuario.getPass());
+                spEditor.commit();
+
                 showProgress(true);
                 mAuthTask = new UserLoginTask(email, password);
                 mAuthTask.execute((Void) null);
@@ -288,10 +305,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         TelephonyManager telManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
+        String numTel = telManager.getLine1Number();
+        if(numTel.equals("")) numTel = "Desconocido";
+
         usuario.setUsername(username);
         usuario.setPass(pass);
         usuario.setNombre("Nombre o Empresa");
-        usuario.setCelular(telManager.getLine1Number());
+        usuario.setCelular(numTel);
         usuario.setDni("00000000");
 
         usuario.setRol(new Rol(1));
