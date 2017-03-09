@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.NumberFormat;
@@ -73,7 +74,10 @@ public class generarProveedoresAsync extends AsyncTask<Object[] , Integer, Array
                     Double.valueOf(aux.getUbicacion().getLongitud())));
             markerOpts.title(aux.getUsuario().getNombre());
             markerOpts.snippet("tel:"+aux.getUsuario().getCelular());
-            miMapa.addMarker(markerOpts);
+
+            Marker m = miMapa.addMarker(markerOpts);
+            MapaActivity act = (MapaActivity) context;
+            act.addMarcador(m.getId(), aux);
         }
     }
 

@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import sacamedelapuro.arg.com.sacamedelapuro.R;
@@ -16,15 +17,30 @@ import sacamedelapuro.arg.com.sacamedelapuro.util.General;
 
 public class PerfilMapaActivity extends AppCompatActivity {
 
-    Button btnConfirmar;
+    private Button btnConfirmar;
+    private TextView txtNombre;
+    private TextView txtServicio;
+    private TextView txtCelular;
+    private TextView txtPrecio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil_mapa);
 
+        txtNombre= (TextView) findViewById(R.id.textViewPerfilPrestadorNombre);
+        txtServicio= (TextView) findViewById(R.id.textViewPerfilServicioNombre);
+        txtCelular= (TextView) findViewById(R.id.textViewPerfilCelularNumero);
+        txtPrecio= (TextView) findViewById(R.id.textViewPerfilPrecioValor);
+
         // Sacar la información correspondiente
         final General prest = (General) getIntent().getExtras().get("prestador");
+
+        txtNombre.setText(prest.getUsuario().getNombre());
+        txtServicio.setText(prest.getServicio().getNombre());
+        //String aux2 = prest.getServicio().getNombre();
+        txtCelular.setText(String.valueOf(prest.getUsuario().getCelular()));
+        txtPrecio.setText(String.valueOf(prest.getServicio().getPrecio()));
 
         btnConfirmar = (Button) findViewById(R.id.btnPerfilMapa);
         btnConfirmar.setOnClickListener(new View.OnClickListener() {

@@ -32,6 +32,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import sacamedelapuro.arg.com.sacamedelapuro.MainActivity;
 import sacamedelapuro.arg.com.sacamedelapuro.R;
@@ -55,7 +57,9 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
     private int origen;
     private int idServicio;
     private LatLng latLng;
+
     private static ArrayList<General> prestadores;
+    private Map<String, General> mapaPrestadores;
 
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
@@ -195,9 +199,15 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void generarNuevosProveedores(float dist){
         // Obtener la distancia del extra
         LatLng posicion= getPosicion();
+
+        // Inicialización del mapa
+        mapaPrestadores = new HashMap<String, General>();
+
         new generarProveedoresAsync(this, miMapa, txtDistancia, dist, posicion, idServicio).execute();
     }
     private void generarNuevosProveedores2(float dist, LatLng pos){
+        // Inicialización del mapa
+        mapaPrestadores = new HashMap<String, General>();
         new generarProveedoresAsync(this, miMapa, txtDistancia, dist, pos, idServicio).execute();
     }
 
@@ -238,11 +248,18 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onInfoWindowLongClick(Marker marker) {
         v.vibrate(50);
-        // TODO: completar con informacion para la pantalla de perfil (dar el prestador correspondiente)
         Intent i = new Intent(MapaActivity.this, PerfilMapaActivity.class);
-        i.putExtra("prestador", prestadores.get(0)); // Dar el correcto
-        //intent.setData(Uri.parse(marker.getSnippet()));
+        General prestador = buscarPrestador(marker.getId());
+        i.putExtra("prestador", prestador);
         startActivityForResult(i, CODIGO_RESULTADO_PRESTADOR);
+    }
+
+    // Usado para relacionar marcadores con prestadores
+    public General buscarPrestador(String id){
+        return mapaPrestadores.get(id);
+    }
+    public void addMarcador(String id, General prest){
+        mapaPrestadores.put(id, prest);
     }
 
     @Override
