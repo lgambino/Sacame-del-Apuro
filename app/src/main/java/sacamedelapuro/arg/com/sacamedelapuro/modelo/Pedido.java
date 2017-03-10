@@ -11,6 +11,7 @@ public class Pedido implements Serializable {
     private String fecha;
     private Servicio servicioPrestador;
     private Ubicacion ubicacionUsuario;
+    private Boolean confirmado;
 
 
     public Pedido() {
@@ -24,6 +25,7 @@ public class Pedido implements Serializable {
         this.fecha = fecha;
         this.servicioPrestador = servicioPrestador;
         this.ubicacionUsuario = ubicacionUsuario;
+        this.confirmado=false;
     }
 
     public Integer getId() {
@@ -72,5 +74,16 @@ public class Pedido implements Serializable {
 
     public void setUbicacionUsuario(Ubicacion ubicacionUsuario) {
         this.ubicacionUsuario = ubicacionUsuario;
+    }
+
+    public Boolean getConfirmado() {
+        return this.confirmado;
+    }
+
+    public void confirmar(){
+        this.confirmado=true;
+    }
+    public void cancelar(){
+        this.confirmado=false;
     }
 }

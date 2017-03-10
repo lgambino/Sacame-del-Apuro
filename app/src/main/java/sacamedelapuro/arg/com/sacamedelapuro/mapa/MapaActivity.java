@@ -190,6 +190,8 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
             case CODIGO_RESULTADO_PRESTADOR:
                 if (resultCode == Activity.RESULT_OK) {
                     General prest= (General) data.getExtras().get("prestador");
+                    // TODO: nuevo pedido
+
                     new AlarmaTestNotificacion(MapaActivity.this, prest);
                 }
                 break;
@@ -250,6 +252,7 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
         v.vibrate(50);
         Intent i = new Intent(MapaActivity.this, PerfilMapaActivity.class);
         General prestador = buscarPrestador(marker.getId());
+        i.putExtra("origen", 1);
         i.putExtra("prestador", prestador);
         startActivityForResult(i, CODIGO_RESULTADO_PRESTADOR);
     }

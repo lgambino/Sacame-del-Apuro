@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,8 +12,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="@dimen/separacion_media">
+        android:orientation="horizontal" >
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -30,6 +29,22 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textStyle="bold" />
     </LinearLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separacion_grande" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        app:srcCompat="@android:drawable/ic_menu_gallery"
+        android:src="@drawable/img1"
+        android:id="@+id/img_perfil_mapa" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separacion_grande" />
 
     <LinearLayout
         android:layout_width="match_parent"

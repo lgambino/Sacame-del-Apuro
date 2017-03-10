@@ -7,6 +7,8 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -29,11 +31,13 @@ public class ConfirmacionReceiver extends BroadcastReceiver {
             // Actualizar el pedido para mostrar que está confirmado por el prestador
 
 
+
             // Crear la notificacion
 
             NotificationManager notifManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             Intent i = new Intent(context, PerfilMapaActivity.class);
             i.putExtra("prestador", (General) intent.getExtras().get("prestador"));
+            i.putExtra("origen", 2);
             // Reemplazar el 1 por el numero de usuario
             PendingIntent pi = PendingIntent.getActivity(context, 1, i, PendingIntent.FLAG_ONE_SHOT);
 
@@ -42,8 +46,10 @@ public class ConfirmacionReceiver extends BroadcastReceiver {
             String ringtone = "content://settings/system/notification_sound";
             Uri UriRingtone = Uri.parse(ringtone);
 
+            Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.sos);
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context.getApplicationContext())
                     .setSmallIcon(R.mipmap.ic_launcher)
+                    .setLargeIcon(bm)
                     .setContentIntent(pi)
                     .setContentTitle("Confirmacion de prestador")
                     .setContentText("El prestador está en camino")

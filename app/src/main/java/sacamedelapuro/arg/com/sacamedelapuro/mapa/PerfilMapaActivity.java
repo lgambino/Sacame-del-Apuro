@@ -56,5 +56,9 @@ public class PerfilMapaActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        if((int)getIntent().getExtras().get("origen")==2){
+            btnConfirmar.setEnabled(false);
+        }
     }
 }
