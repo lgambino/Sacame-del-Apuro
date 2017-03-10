@@ -9,20 +9,21 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <uses-feature android:name="android.hardware.camera" android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_sos"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -39,25 +40,27 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login"></activity>
-
-        <activity android:name=".BuscarCercanosActivity"/>
-
+            android:label="@string/title_activity_login" />
+        <activity android:name=".BuscarCercanosActivity" />
         <activity android:name=".mapa.MapaActivity" />
-        <activity android:name=".mapa.DistanciaActivity"/>
-        <activity android:name=".mapa.PerfilMapaActivity"/>
-        <receiver android:name=".util.ConfirmacionReceiver"/>
+        <activity android:name=".mapa.DistanciaActivity" />
+        <activity android:name=".mapa.PerfilMapaActivity" />
 
-        <receiver android:name=".mapa.BroadcastMapa"
+        <receiver android:name=".util.ConfirmacionReceiver" />
+        <receiver
+            android:name=".mapa.BroadcastMapa"
             android:enabled="true"
             android:exported="true">
             <intent-filter android:priority="200">
                 <action android:name="android.intent.ACTION.VIEW" />
+
                 <data android:scheme="geo" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter android:priority="200">
                 <action android:name="Intent.ACTION.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter android:priority="200">
@@ -66,22 +69,26 @@
             <intent-filter android:priority="200">
                 <action android:name="android.intent.ACTION.SEND" />
             </intent-filter>
-        </receiver>>
-
-
+        </receiver>
+        >
         <service
-            android:name=".mensajes.FirebaseServicioId" android:enabled="true" android:exported="true">
+            android:name=".mensajes.FirebaseServicioId"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
         <service
-            android:name=".mensajes.FirebaseServicio" android:enabled="true" android:exported="true">
+            android:name=".mensajes.FirebaseServicio"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <activity android:name=".ListaPedidosActivity"></activity>
     </application>
 
 </manifest>

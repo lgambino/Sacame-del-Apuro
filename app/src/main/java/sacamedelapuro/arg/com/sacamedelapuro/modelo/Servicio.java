@@ -14,6 +14,7 @@ public class Servicio implements Serializable{
     private String descripcion;
     private String observaciones;
     private Integer precio;
+    private Integer puntaje;
     private TipoServicio tipo;
 
 
@@ -25,20 +26,22 @@ public class Servicio implements Serializable{
         this.id = id;
     }
 
-    public Servicio(Integer id, String nombre, String descripcion, Integer precio, TipoServicio tipo) {
+    public Servicio(Integer id, String nombre, String descripcion, Integer precio, Integer puntaje, TipoServicio tipo) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
+        this.puntaje = puntaje;
         this.tipo = tipo;
     }
 
-    public Servicio(Integer id, String nombre, String descripcion, String observaciones, Integer precio, TipoServicio tipo) {
+    public Servicio(Integer id, String nombre, String descripcion, String observaciones, Integer precio, Integer puntaje, TipoServicio tipo) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.observaciones = observaciones;
         this.precio = precio;
+        this.puntaje = puntaje;
         this.tipo = tipo;
     }
 
@@ -80,6 +83,14 @@ public class Servicio implements Serializable{
 
     public void setPrecio(Integer precio) {
         this.precio = precio;
+    }
+
+    public Integer getPuntaje() {
+        return puntaje;
+    }
+
+    public void setPuntaje(Integer puntaje) {
+        this.puntaje = puntaje;
     }
 
     public TipoServicio getTipo() {

@@ -28,10 +28,11 @@ public class ServicioDao extends GenericDaoImpl<Servicio>{
         public static final String COLUMNA_DESCRIPCION = "DESCRIPCION";
         public static final String COLUMNA_OBSERVACIONES = "OBSERVACIONES";
         public static final String COLUMNA_PRECIO = "PRECIO";
+        public static final String COLUMNA_PUNTAJE = "PUNTAJE";
         public static final String COLUMNA_ID_TIPO = "ID_TIPO";
     }
 
-    private static final String[] columnas = {"NOMBRE", "DESCRIPCION", "OBSERVACIONES", "PRECIO", "ID_TIPO"};
+    private static final String[] columnas = {"NOMBRE", "DESCRIPCION", "OBSERVACIONES", "PRECIO", "PUNTAJE", "ID_TIPO"};
 
 
     public void delete(Integer id) {
@@ -61,7 +62,8 @@ public class ServicioDao extends GenericDaoImpl<Servicio>{
                 servicio.setDescripcion(cursor.getString(1));
                 servicio.setObservaciones(cursor.getString(2));
                 servicio.setPrecio(cursor.getInt(3));
-                servicio.setTipo(new TipoServicio(cursor.getInt(4)));
+                servicio.setPuntaje(cursor.getInt(4));
+                servicio.setTipo(new TipoServicio(cursor.getInt(5)));
 
                 servicios.add(servicio);
 
@@ -89,6 +91,7 @@ public class ServicioDao extends GenericDaoImpl<Servicio>{
         valores.put(TablaServicio.COLUMNA_DESCRIPCION, servicio.getDescripcion());
         valores.put(TablaServicio.COLUMNA_OBSERVACIONES, servicio.getObservaciones());
         valores.put(TablaServicio.COLUMNA_PRECIO, servicio.getPrecio());
+        valores.put(TablaServicio.COLUMNA_PUNTAJE, servicio.getPuntaje());
         valores.put(TablaServicio.COLUMNA_ID_TIPO, servicio.getTipo().getId());
 
         return valores;
