@@ -10,6 +10,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import sacamedelapuro.arg.com.sacamedelapuro.R;
+import sacamedelapuro.arg.com.sacamedelapuro.dao.ServicioDao;
+import sacamedelapuro.arg.com.sacamedelapuro.dao.UsuarioDao;
 import sacamedelapuro.arg.com.sacamedelapuro.modelo.Pedido;
 
 /**
@@ -31,17 +33,13 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
         View row = convertView;
         if (row == null) row = inflater.inflate(R.layout.fila_pedido, parent, false);
 
+        Pedido pedidoAux = this.getItem(position);
+
         TextView txtNombreUsuario = (TextView) row.findViewById(R.id.nombre_usuario);
-        txtNombreUsuario.setText(this.getItem(position).getUsuario().getNombre());
+        txtNombreUsuario.setText(pedidoAux.getUsuario().getNombre());
 
         TextView txtNombrePrestador = (TextView) row.findViewById(R.id.nombre_prestador);
-        txtNombreUsuario.setText(this.getItem(position).getPrestador().getNombre());
-
-        TextView txtFecha = (TextView) row.findViewById(R.id.fecha);
-        txtNombreUsuario.setText(this.getItem(position).getFecha());
-
-        TextView txtPrecio = (TextView) row.findViewById(R.id.precio);
-        txtNombreUsuario.setText("$ " + this.getItem(position).getServicioPrestador().getPrecio());
+        txtNombrePrestador.setText(pedidoAux.getPrestador().getNombre());
 
         return (row);
     }

@@ -153,7 +153,7 @@ public class UsuarioDao extends GenericDaoImpl<Usuario> {
     public List<General> getUsuariosServicios(Integer idTipoServicio){
         leer();
 
-        Cursor cursor = bd.rawQuery("SELECT us._id, us.nombre, us.celular, s._id, s.nombre, s.descripcion, s.observaciones, s.precio, ub.latitud, ub.longitud, ub.direccion " +
+        Cursor cursor = bd.rawQuery("SELECT us._id, us.nombre, us.celular, s._id, s.nombre, s.descripcion, s.observaciones, s.precio, s.puntaje, ub.latitud, ub.longitud, ub.direccion " +
                                     "FROM usuario as us, servicio as s, ubicacion as ub " +
                                     "WHERE us.id_rol=2 AND s.id_tipo=" + idTipoServicio + " AND us.id_servicio=s._id " +
                                     "AND ub._id=us.id_ubicacion", null);
@@ -173,9 +173,10 @@ public class UsuarioDao extends GenericDaoImpl<Usuario> {
                 servicio.setDescripcion(cursor.getString(5));
                 servicio.setObservaciones(cursor.getString(6));
                 servicio.setPrecio(cursor.getInt(7));
-                ubicacion.setLatitud(cursor.getString(8));
-                ubicacion.setLongitud(cursor.getString(9));
-                ubicacion.setDireccion(cursor.getString(10));
+                servicio.setPuntaje(cursor.getInt(8));
+                ubicacion.setLatitud(cursor.getString(9));
+                ubicacion.setLongitud(cursor.getString(10));
+                ubicacion.setDireccion(cursor.getString(11));
 
                 General general = new General();
                 general.setUsuario(usuario);
@@ -188,6 +189,67 @@ public class UsuarioDao extends GenericDaoImpl<Usuario> {
         }
 
         return listado;
+    }
+
+    public General getPrestadorServicio(Integer idPrestador){
+        leer();
+
+        Cursor cursor = bd.rawQuery("SELECT us._id, us.nombre, us.celular, s._id, s.nombre, s.descripcion, s.observaciones, s.precio, s.puntaje " +
+                "FROM usuario as us, servicio as s " +
+                "WHERE us.id_=" + idPrestador + " AND us.id_servicio=s._id", null);
+
+        General general = new General();
+        if (cursor.moveToFirst()) {
+            do {
+                Usuario usuario = new Usuario();
+                Servicio servicio = new Servicio();
+
+                usuario.setId(cursor.getInt(0));
+                usuario.setNombre(cursor.getString(1));
+                usuario.setCelular(cursor.getString(2));
+                servicio.setId(cursor.getInt(3));
+                servicio.setNombre(cursor.getString(4));
+                servicio.setDescripcion(cursor.getString(5));
+                servicio.setObservaciones(cursor.getString(6));
+                servicio.setPrecio(cursor.getInt(7));
+                servicio.setPuntaje(cursor.getInt(8));
+
+                general.setUsuario(usuario);
+                general.setServicio(servicio);
+
+            } while(cursor.moveToNext());
+        }
+
+        return general;
+    }
+
+    public General getUsuarioUbicacion(Integer idUsuario){
+        leer();
+
+        Cursor cursor = bd.rawQuery("SELECT us._id, us.nombre, us.celular, ub.latitud, ub.longitud, ub.direccion " +
+                "FROM usuario as us, ubicacion as ub " +
+                "WHERE us.id_=" + idUsuario + " AND ub._id=us.id_ubicacion", null);
+
+        General general = new General();
+        if (cursor.moveToFirst()) {
+            do {
+                Usuario usuario = new Usuario();
+                Ubicacion ubicacion = new Ubicacion();
+
+                usuario.setId(cursor.getInt(0));
+                usuario.setNombre(cursor.getString(1));
+                usuario.setCelular(cursor.getString(2));
+                ubicacion.setLatitud(cursor.getString(3));
+                ubicacion.setLongitud(cursor.getString(4));
+                ubicacion.setDireccion(cursor.getString(5));
+
+                general.setUsuario(usuario);
+                general.setUbicacion(ubicacion);
+
+            } while(cursor.moveToNext());
+        }
+
+        return general;
     }
 
     public void save(Usuario usuario) {

@@ -52,7 +52,7 @@ public class ListaPedidosActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Pedido pedidoAux = (Pedido) listaPedidos.getItemAtPosition(position);
 
-
+                Toast.makeText(ListaPedidosActivity.this, pedidoAux.getFecha() + " / $" + pedidoAux.getServicioPrestador().getPrecio(), Toast.LENGTH_SHORT).show();
             }
         });
     }
