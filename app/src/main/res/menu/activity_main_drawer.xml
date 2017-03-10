@@ -11,9 +11,9 @@
             android:icon="@drawable/ic_menu_search"
             android:title="Buscar Prestadores" />
         <item
-            android:id="@+id/btnListarPrestadores"
+            android:id="@+id/btnVerPedidos"
             android:icon="@drawable/ic_menu_listar"
-            android:title="Listar Prestadores" />
+            android:title="Pedidos" />
         <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"

@@ -264,6 +264,12 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.btnBuscarPrestadoresCercanos) {
             Intent i = new Intent(MainActivity.this, BuscarCercanosActivity.class);
             startActivity(i);
+
+        } else if (id == R.id.btnVerPedidos) {
+            Intent i = new Intent(MainActivity.this, ListaPedidosActivity.class);
+            i.putExtra("usuario", usuario);
+            startActivity(i);
+
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_send) {
