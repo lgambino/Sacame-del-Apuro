@@ -63,18 +63,53 @@ public class PedidoDao extends GenericDaoImpl<Pedido> {
     public List<Pedido> getAllPorUsuario(Integer idUsuario) {
         leer();
 
-        Cursor cursor = bd.rawQuery("SELECT * FROM " + TablaPedido.TABLA + " WHERE id_usuario="+ idUsuario +
-                " OR id_prestador=" + idUsuario, null);
+        Cursor cursor = bd.rawQuery("SELECT ped.id_usuario, ped.id_prestador, ped.fecha, ped.id_servicio, ped.id_ubicacion," +
+                " us.username, us.nombre, us.dni, us.celular," +
+                " pre.username, pre.nombre, pre.celular," +
+                " s.nombre, s.descripcion, s.observaciones, s.precio, s.puntaje," +
+                " ub.latitud, ub.longitud, ub.direccion" +
+                " FROM pedido as ped, usuario as us, usuario as pre, servicio as s, ubicacion as ub" +
+                " WHERE (ped.id_usuario=" + idUsuario + " OR ped.id_prestador=" + idUsuario + ")" +
+                " AND us._id=ped.id_usuario" +
+                " AND pre._id=ped.id_prestador" +
+                " AND s._id=ped.id_servicio" +
+                " AND ub._id=ped.id_ubicacion " +
+                " ORDER BY ped._id DESC", null);
 
         List<Pedido> pedidos = new ArrayList<Pedido>();
         if (cursor.moveToFirst()) {
             do {
                 Pedido pedido = new Pedido();
-                pedido.setUsuario(new Usuario(cursor.getInt(0)));
-                pedido.setPrestador(new Usuario(cursor.getInt(1)));
+
+                Usuario usuario = new Usuario(cursor.getInt(0));
+                Usuario prestador = new Usuario(cursor.getInt(1));
                 pedido.setFecha(cursor.getString(2));
-                pedido.setServicioPrestador(new Servicio(cursor.getInt(3)));
-                pedido.setUbicacionUsuario(new Ubicacion(cursor.getInt(4)));
+                Servicio servicio = new Servicio(cursor.getInt(3));
+                Ubicacion ubicacion = new Ubicacion(cursor.getInt(4));
+
+                usuario.setUsername(cursor.getString(5));
+                usuario.setNombre(cursor.getString(6));
+                usuario.setDni(cursor.getString(7));
+                usuario.setCelular(cursor.getString(8));
+
+                prestador.setUsername(cursor.getString(9));
+                prestador.setNombre(cursor.getString(10));
+                prestador.setCelular(cursor.getString(11));
+
+                servicio.setNombre(cursor.getString(12));
+                servicio.setDescripcion(cursor.getString(13));
+                servicio.setObservaciones(cursor.getString(14));
+                servicio.setPrecio(cursor.getInt(15));
+                servicio.setPuntaje(cursor.getInt(16));
+
+                ubicacion.setLatitud(cursor.getString(17));
+                ubicacion.setLongitud(cursor.getString(18));
+                ubicacion.setDireccion(cursor.getString(19));
+
+                pedido.setUsuario(usuario);
+                pedido.setPrestador(prestador);
+                pedido.setServicioPrestador(servicio);
+                pedido.setUbicacionUsuario(ubicacion);
 
                 pedidos.add(pedido);
 
