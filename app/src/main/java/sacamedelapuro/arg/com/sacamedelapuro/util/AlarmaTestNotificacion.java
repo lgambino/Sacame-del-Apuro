@@ -7,19 +7,28 @@ import android.content.Intent;
 
 import java.util.Calendar;
 
+import sacamedelapuro.arg.com.sacamedelapuro.modelo.Pedido;
+import sacamedelapuro.arg.com.sacamedelapuro.modelo.Usuario;
+
 
 public class AlarmaTestNotificacion {
 
     static Context contexto;
     static General prestador;
+    static Pedido pedido;
+    static Usuario usuario;
 
-    public AlarmaTestNotificacion (Context context, General prest){
+    public AlarmaTestNotificacion (Context context, General prest, Pedido ped, Usuario user){
 
         contexto=context;
         prestador=prest;
+        pedido=ped;
+        usuario=user;
 
         Intent intent = new Intent(context, ConfirmacionReceiver.class);
         intent.putExtra("prestador", prest);
+        intent.putExtra("usuario", user);
+        intent.putExtra("pedido", ped);
 
 
         PendingIntent pi = PendingIntent.getBroadcast(context,prest.getUsuario().getId(),intent,0);

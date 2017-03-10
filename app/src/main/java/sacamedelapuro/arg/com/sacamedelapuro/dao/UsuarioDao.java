@@ -153,7 +153,7 @@ public class UsuarioDao extends GenericDaoImpl<Usuario> {
     public List<General> getUsuariosServicios(Integer idTipoServicio){
         leer();
 
-        Cursor cursor = bd.rawQuery("SELECT us._id, us.nombre, us.celular, s._id, s.nombre, s.descripcion, s.observaciones, s.precio, s.puntaje, ub.latitud, ub.longitud, ub.direccion " +
+        Cursor cursor = bd.rawQuery("SELECT us._id, us.nombre, us.celular, s._id, s.nombre, s.descripcion, s.observaciones, s.precio, s.puntaje, ub.latitud, ub.longitud, ub.direccion, ub._id, us.imagen " +
                                     "FROM usuario as us, servicio as s, ubicacion as ub " +
                                     "WHERE us.id_rol=2 AND s.id_tipo=" + idTipoServicio + " AND us.id_servicio=s._id " +
                                     "AND ub._id=us.id_ubicacion", null);
@@ -177,6 +177,10 @@ public class UsuarioDao extends GenericDaoImpl<Usuario> {
                 ubicacion.setLatitud(cursor.getString(9));
                 ubicacion.setLongitud(cursor.getString(10));
                 ubicacion.setDireccion(cursor.getString(11));
+                ubicacion.setId(cursor.getInt(12));
+                usuario.setUbicacion(ubicacion);
+
+                usuario.setImagen(cursor.getString(13));
 
                 General general = new General();
                 general.setUsuario(usuario);

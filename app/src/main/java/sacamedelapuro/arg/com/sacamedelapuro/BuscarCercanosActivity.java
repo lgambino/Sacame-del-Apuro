@@ -14,6 +14,7 @@ import java.util.List;
 import sacamedelapuro.arg.com.sacamedelapuro.dao.TipoServicioDao;
 import sacamedelapuro.arg.com.sacamedelapuro.mapa.MapaActivity;
 import sacamedelapuro.arg.com.sacamedelapuro.modelo.TipoServicio;
+import sacamedelapuro.arg.com.sacamedelapuro.modelo.Usuario;
 
 
 public class BuscarCercanosActivity extends AppCompatActivity {
@@ -22,11 +23,15 @@ public class BuscarCercanosActivity extends AppCompatActivity {
     private Button btnBuscar;
     private List<TipoServicio> servicios;
     private Spinner spin;
+    private Usuario usuario;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buscar_cercanos);
+
+        usuario= (Usuario) getIntent().getExtras().get("usuario");
 
         servicios = new TipoServicioDao(this).getAllPorNombre();
         ArrayList<String> servs= new ArrayList<>();
@@ -45,7 +50,8 @@ public class BuscarCercanosActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(BuscarCercanosActivity.this, MapaActivity.class);
-                i.putExtra("distancia_inicial", 2); // Distancia inicial de 2 kms - NO usada
+                i.putExtra("distancia_inicial", 2); // Distancia inicial de 2 kms
+                i.putExtra("usuario", usuario);
                 i.putExtra("origen", CODIGO_ORIGEN_BUSCAR);
                 if(spin.getSelectedItemPosition()==0){
                     i.putExtra("servicio_id", -1);

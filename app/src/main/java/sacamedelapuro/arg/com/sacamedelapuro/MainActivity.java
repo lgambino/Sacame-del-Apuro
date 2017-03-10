@@ -263,6 +263,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.btnBuscarPrestadoresCercanos) {
             Intent i = new Intent(MainActivity.this, BuscarCercanosActivity.class);
+            i.putExtra("usuario", usuario);
             startActivity(i);
 
         } else if (id == R.id.btnVerPedidos) {

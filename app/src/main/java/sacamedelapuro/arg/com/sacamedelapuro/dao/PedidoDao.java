@@ -29,9 +29,10 @@ public class PedidoDao extends GenericDaoImpl<Pedido> {
         public static final String COLUMNA_FECHA = "FECHA";
         public static final String COLUMNA_SERVICIO = "ID_SERVICIO";
         public static final String COLUMNA_UBICACION = "ID_UBICACION";
+        public static final String COLUMNA_CONFIRMADO = "CONFIRMADO";
     }
 
-    private static final String[] columnas = {"ID_USUARIO", "ID_PRESTADOR", "FECHA", "ID_SERVICIO", "ID_UBICACION"};
+    private static final String[] columnas = {"ID_USUARIO", "ID_PRESTADOR", "FECHA", "ID_SERVICIO", "ID_UBICACION", "CONFIRMADO"};
 
 
     public void delete(Integer id) {
@@ -49,6 +50,9 @@ public class PedidoDao extends GenericDaoImpl<Pedido> {
                 pedido.setFecha(cursor.getString(2));
                 pedido.setServicioPrestador(new Servicio(cursor.getInt(3)));
                 pedido.setUbicacionUsuario(new Ubicacion(cursor.getInt(4)));
+                if (cursor.getInt(5)==1) pedido.setConfirmado(true);
+                else pedido.setConfirmado(false);
+
 
             } while(cursor.moveToNext());
         }
@@ -63,7 +67,7 @@ public class PedidoDao extends GenericDaoImpl<Pedido> {
     public List<Pedido> getAllPorUsuario(Integer idUsuario) {
         leer();
 
-        Cursor cursor = bd.rawQuery("SELECT ped.id_usuario, ped.id_prestador, ped.fecha, ped.id_servicio, ped.id_ubicacion," +
+        Cursor cursor = bd.rawQuery("SELECT ped.id_usuario, ped.id_prestador, ped.fecha, ped.id_servicio, ped.id_ubicacion, ped.confirmado," +
                 " us.username, us.nombre, us.dni, us.celular," +
                 " pre.username, pre.nombre, pre.celular," +
                 " s.nombre, s.descripcion, s.observaciones, s.precio, s.puntaje," +
@@ -86,25 +90,27 @@ public class PedidoDao extends GenericDaoImpl<Pedido> {
                 pedido.setFecha(cursor.getString(2));
                 Servicio servicio = new Servicio(cursor.getInt(3));
                 Ubicacion ubicacion = new Ubicacion(cursor.getInt(4));
+                if (cursor.getInt(5)==1) pedido.setConfirmado(true);
+                else pedido.setConfirmado(false);
 
-                usuario.setUsername(cursor.getString(5));
-                usuario.setNombre(cursor.getString(6));
-                usuario.setDni(cursor.getString(7));
-                usuario.setCelular(cursor.getString(8));
+                usuario.setUsername(cursor.getString(6));
+                usuario.setNombre(cursor.getString(7));
+                usuario.setDni(cursor.getString(8));
+                usuario.setCelular(cursor.getString(9));
 
-                prestador.setUsername(cursor.getString(9));
-                prestador.setNombre(cursor.getString(10));
-                prestador.setCelular(cursor.getString(11));
+                prestador.setUsername(cursor.getString(10));
+                prestador.setNombre(cursor.getString(11));
+                prestador.setCelular(cursor.getString(12));
 
-                servicio.setNombre(cursor.getString(12));
-                servicio.setDescripcion(cursor.getString(13));
-                servicio.setObservaciones(cursor.getString(14));
-                servicio.setPrecio(cursor.getInt(15));
-                servicio.setPuntaje(cursor.getInt(16));
+                servicio.setNombre(cursor.getString(13));
+                servicio.setDescripcion(cursor.getString(14));
+                servicio.setObservaciones(cursor.getString(15));
+                servicio.setPrecio(cursor.getInt(16));
+                servicio.setPuntaje(cursor.getInt(17));
 
-                ubicacion.setLatitud(cursor.getString(17));
-                ubicacion.setLongitud(cursor.getString(18));
-                ubicacion.setDireccion(cursor.getString(19));
+                ubicacion.setLatitud(cursor.getString(18));
+                ubicacion.setLongitud(cursor.getString(19));
+                ubicacion.setDireccion(cursor.getString(20));
 
                 pedido.setUsuario(usuario);
                 pedido.setPrestador(prestador);
@@ -141,6 +147,7 @@ public class PedidoDao extends GenericDaoImpl<Pedido> {
         valores.put(TablaPedido.COLUMNA_FECHA, pedido.getFecha());
         valores.put(TablaPedido.COLUMNA_SERVICIO, pedido.getServicioPrestador().getId());
         valores.put(TablaPedido.COLUMNA_UBICACION, pedido.getUbicacionUsuario().getId());
+        valores.put(TablaPedido.COLUMNA_CONFIRMADO, pedido.getConfirmadoBD());
 
         return valores;
     }

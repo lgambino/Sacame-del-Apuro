@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -47,6 +48,10 @@ public class ListaPedidosActivity extends AppCompatActivity {
         pedidosAdapter = new PedidoAdapter(ListaPedidosActivity.this, lista);
         listaPedidos.setAdapter(pedidosAdapter);
 
+        TextView txtNombreUsuario = (TextView) findViewById(R.id.nombre_usuario);
+        txtNombreUsuario.setText(usuario.getNombre());
+
+        /*
         listaPedidos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -54,7 +59,7 @@ public class ListaPedidosActivity extends AppCompatActivity {
 
                 Toast.makeText(ListaPedidosActivity.this, pedidoAux.getFecha() + " / $" + pedidoAux.getServicioPrestador().getPrecio(), Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
     }
 }
 

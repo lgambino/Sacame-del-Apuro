@@ -15,7 +15,7 @@ public class Pedido implements Serializable {
 
 
     public Pedido() {
-
+        this.confirmado=false;
     }
 
     public Pedido(Integer id, Usuario usuario, Usuario prestador, String fecha, Servicio servicioPrestador, Ubicacion ubicacionUsuario) {
@@ -27,7 +27,14 @@ public class Pedido implements Serializable {
         this.ubicacionUsuario = ubicacionUsuario;
         this.confirmado=false;
     }
-
+    public Pedido( Usuario usuario, Usuario prestador, String fecha, Servicio servicioPrestador, Ubicacion ubicacionUsuario) {
+        this.usuario = usuario;
+        this.prestador = prestador;
+        this.fecha = fecha;
+        this.servicioPrestador = servicioPrestador;
+        this.ubicacionUsuario = ubicacionUsuario;
+        this.confirmado=false;
+    }
     public Integer getId() {
         return id;
     }
@@ -85,5 +92,13 @@ public class Pedido implements Serializable {
     }
     public void cancelar(){
         this.confirmado=false;
+    }
+    // Obtiene el valor 0 o 1 para ingresar en BD
+    public int getConfirmadoBD(){
+        if (confirmado) return 1;
+        else return 0;
+    }
+    public void setConfirmado(Boolean conf){
+        this.confirmado=conf;
     }
 }

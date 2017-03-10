@@ -35,11 +35,14 @@ public class PedidoAdapter extends ArrayAdapter<Pedido> {
 
         Pedido pedidoAux = this.getItem(position);
 
-        TextView txtNombreUsuario = (TextView) row.findViewById(R.id.nombre_usuario);
-        txtNombreUsuario.setText(pedidoAux.getUsuario().getNombre());
-
         TextView txtNombrePrestador = (TextView) row.findViewById(R.id.nombre_prestador);
         txtNombrePrestador.setText(pedidoAux.getPrestador().getNombre());
+
+        TextView txtNombrePrecio = (TextView) row.findViewById(R.id.nombre_precio);
+        txtNombrePrecio.setText(String.valueOf(pedidoAux.getServicioPrestador().getPrecio()));
+
+        TextView txtNombreFecha = (TextView) row.findViewById(R.id.nombre_fecha);
+        txtNombreFecha.setText(pedidoAux.getFecha());
 
         return (row);
     }

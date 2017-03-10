@@ -117,13 +117,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
         // *** sólo activar para borrar la BD ***
-        /*
+
         ConexionBD conexionBD = new ConexionBD(this);
         try {
             conexionBD.deleteBD();
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
 
         SharedPreferences sp = this.getSharedPreferences("Login", 0);
 

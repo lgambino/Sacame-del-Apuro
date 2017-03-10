@@ -7,12 +7,11 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import sacamedelapuro.arg.com.sacamedelapuro.R;
-import sacamedelapuro.arg.com.sacamedelapuro.util.AlarmaTestNotificacion;
-import sacamedelapuro.arg.com.sacamedelapuro.util.ConfirmacionReceiver;
 import sacamedelapuro.arg.com.sacamedelapuro.util.General;
 
 public class PerfilMapaActivity extends AppCompatActivity {
@@ -22,6 +21,7 @@ public class PerfilMapaActivity extends AppCompatActivity {
     private TextView txtServicio;
     private TextView txtCelular;
     private TextView txtPrecio;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,13 +32,13 @@ public class PerfilMapaActivity extends AppCompatActivity {
         txtServicio= (TextView) findViewById(R.id.textViewPerfilServicioNombre);
         txtCelular= (TextView) findViewById(R.id.textViewPerfilCelularNumero);
         txtPrecio= (TextView) findViewById(R.id.textViewPerfilPrecioValor);
+        imageView = (ImageView) findViewById(R.id.img_perfil_mapa);
 
         // Sacar la información correspondiente
         final General prest = (General) getIntent().getExtras().get("prestador");
 
         txtNombre.setText(prest.getUsuario().getNombre());
         txtServicio.setText(prest.getServicio().getNombre());
-        //String aux2 = prest.getServicio().getNombre();
         txtCelular.setText(String.valueOf(prest.getUsuario().getCelular()));
         txtPrecio.setText(String.valueOf(prest.getServicio().getPrecio()));
 
@@ -60,5 +60,10 @@ public class PerfilMapaActivity extends AppCompatActivity {
         if((int)getIntent().getExtras().get("origen")==2){
             btnConfirmar.setEnabled(false);
         }
+
+        String aux = prest.getUsuario().getImagen();
+        int resID = getResources().getIdentifier(aux, "drawable", getPackageName());
+        imageView.setImageResource(resID);
+
     }
 }

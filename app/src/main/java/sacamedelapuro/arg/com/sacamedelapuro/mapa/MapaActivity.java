@@ -31,12 +31,17 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import sacamedelapuro.arg.com.sacamedelapuro.MainActivity;
 import sacamedelapuro.arg.com.sacamedelapuro.R;
+import sacamedelapuro.arg.com.sacamedelapuro.dao.PedidoDao;
+import sacamedelapuro.arg.com.sacamedelapuro.modelo.Pedido;
+import sacamedelapuro.arg.com.sacamedelapuro.modelo.Usuario;
 import sacamedelapuro.arg.com.sacamedelapuro.util.AlarmaTestNotificacion;
 import sacamedelapuro.arg.com.sacamedelapuro.util.General;
 
@@ -57,6 +62,8 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
     private int origen;
     private int idServicio;
     private LatLng latLng;
+
+    private Usuario usuario;
 
     private static ArrayList<General> prestadores;
     private Map<String, General> mapaPrestadores;
@@ -79,6 +86,7 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         idServicio = (int) getIntent().getExtras().get("servicio_id");
+        usuario = (Usuario) getIntent().getExtras().get("usuario");
 
         origen = (int) getIntent().getExtras().get("origen");
         if (origen == CODIGO_ORIGEN_BUSCAR) {
@@ -189,10 +197,11 @@ public class MapaActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
             case CODIGO_RESULTADO_PRESTADOR:
                 if (resultCode == Activity.RESULT_OK) {
+                    // Creación del pedido
                     General prest= (General) data.getExtras().get("prestador");
-                    // TODO: nuevo pedido
-
-                    new AlarmaTestNotificacion(MapaActivity.this, prest);
+                    Pedido pedido = new Pedido(usuario, prest.getUsuario(), new SimpleDateFormat("dd/MM/yyyy").format(new Date()), prest.getServicio(), prest/*.getUsuario()*/.getUbicacion());
+                    new PedidoDao(this).save(pedido);
+                    new AlarmaTestNotificacion(MapaActivity.this, prest, pedido, usuario);
                 }
                 break;
         }

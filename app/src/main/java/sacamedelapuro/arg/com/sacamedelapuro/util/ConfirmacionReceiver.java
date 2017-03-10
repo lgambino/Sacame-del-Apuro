@@ -17,6 +17,7 @@ import android.support.v4.app.NotificationCompat;
 import sacamedelapuro.arg.com.sacamedelapuro.R;
 import sacamedelapuro.arg.com.sacamedelapuro.mapa.MapaActivity;
 import sacamedelapuro.arg.com.sacamedelapuro.mapa.PerfilMapaActivity;
+import sacamedelapuro.arg.com.sacamedelapuro.modelo.Pedido;
 
 public class ConfirmacionReceiver extends BroadcastReceiver {
     private static final String tag = "ConfirmacionReceiver";
@@ -29,16 +30,17 @@ public class ConfirmacionReceiver extends BroadcastReceiver {
             AlarmaTestNotificacion.cancelarAlarma();
 
             // Actualizar el pedido para mostrar que está confirmado por el prestador
-
-
+            Pedido ped = (Pedido) intent.getExtras().get("pedido");
+            ped.setConfirmado(true);
 
             // Crear la notificacion
 
             NotificationManager notifManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             Intent i = new Intent(context, PerfilMapaActivity.class);
-            i.putExtra("prestador", (General) intent.getExtras().get("prestador"));
+            General prestador = (General) intent.getExtras().get("prestador");
+            i.putExtra("prestador", prestador);
             i.putExtra("origen", 2);
-            // Reemplazar el 1 por el numero de usuario
+
             PendingIntent pi = PendingIntent.getActivity(context, 1, i, PendingIntent.FLAG_ONE_SHOT);
 
             // Ringtone de la notificación
@@ -52,7 +54,7 @@ public class ConfirmacionReceiver extends BroadcastReceiver {
                     .setLargeIcon(bm)
                     .setContentIntent(pi)
                     .setContentTitle("Confirmacion de prestador")
-                    .setContentText("El prestador está en camino")
+                    .setContentText(prestador.getUsuario().getNombre()+" está en camino")
                     .setAutoCancel(true)
                     .setSound(UriRingtone);
 
